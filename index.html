@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مجلة القسم - التعاميم والمقالات</title>
+    <style>
+        /* نفس التصميم السابق مع إضافة */
+        
+        /* شاشة تسجيل الدخول */
+        .login-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            transition: opacity 0.5s;
+        }
+
+        .login-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .login-box {
+            background: white;
+            padding: 3rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            animation: fadeInUp 0.5s;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-box h2 {
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 2rem;
+        }
+
+        .login-box p {
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        .password-input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+            transition: border-color 0.3s;
+        }
+
+        .password-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .login-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.3s;
+        }
+
+        .login-btn:hover {
+            transform: scale(1.02);
+        }
+
+        .error-message {
+            color: #dc3545;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        /* زر تسجيل الخروج */
+        .logout-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-right: 1rem;
+        }
+
+        .admin-badge {
+            background: #28a745;
+            color: white;
+            padding: 0.3rem 1rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            margin-right: 1rem;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        /* زر نسخ الرابط */
+        .copy-link-btn {
+            background: #17a2b8;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .copy-link-btn:hover {
+            background: #138496;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #28a745;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 3000;
+            animation: slideUp 0.3s;
+            display: none;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translate(-50%, 20px);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, 0);
+            }
+        }
+
+        .toast.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- شاشة تسجيل الدخول -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-box">
+            <h2>🔐 مجلة القسم</h2>
+            <p>الرجاء إدخال كلمة المرور للمشرفين</p>
+            <input type="password" id="passwordInput" class="password-input" placeholder="كلمة مرور المشرف" onkeypress="handleKeyPress(event)">
+            <button class="login-btn" onclick="checkPassword()">دخول</button>
+            <div id="loginError" class="error-message">كلمة المرور غير صحيحة</div>
+        </div>
+    </div>
+
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <h1>📚 مجلة القسم</h1>
+                <p>التعاميم والمقالات الرسمية</p>
+            </div>
+            <div class="header-controls">
+                <span id="adminBadge" class="admin-badge" style="display: none;">👤 مشرف</span>
+                <button class="copy-link-btn" onclick="copyMagazineLink()">
+                    <span>🔗</span> نسخ رابط المجلة
+                </button>
+                <button id="addPostBtn" class="add-post-btn" onclick="openModal()" style="display: none;">
+                    <span>+</span> إضافة منشور جديد
+                </button>
+                <button id="logoutBtn" class="logout-btn" onclick="logout()" style="display: none;">
+                    تسجيل الخروج
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div id="postsContainer" class="posts-container">
+            <!-- سيتم إضافة المنشورات هنا -->
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>جميع الحقوق محفوظة &copy; 2024 - مجلة القسم</p>
+    </footer>
+
+    <!-- نافذة إضافة منشور جديد -->
+    <div id="postModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>إضافة منشور جديد</h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            
+            <form id="postForm" onsubmit="addNewPost(event)">
+                <div class="form-group">
+                    <label>نوع المنشور</label>
+                    <select id="postType" required>
+                        <option value="تعميم">📢 تعميم</option>
+                        <option value="مقال">📝 مقال</option>
+                        <option value="إعلان">📌 إعلان</option>
+                        <option value="خبر">📰 خبر</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>عنوان المنشور</label>
+                    <input type="text" id="postTitle" placeholder="أدخل عنوان المنشور" required>
+                </div>
+
+                <div class="form-group">
+                    <label>محتوى المنشور</label>
+                    <textarea id="postText" placeholder="أدخل محتوى المنشور" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>الصور (اختياري)</label>
+                    <div id="imagesContainer">
+                        <div class="image-input-group">
+                            <input type="url" class="image-url" placeholder="رابط الصورة">
+                            <button type="button" class="remove-image-btn" onclick="removeImageInput(this)">✕</button>
+                        </div>
+                    </div>
+                    <button type="button" class="add-image-btn" onclick="addImageInput()">+ إضافة صورة أخرى</button>
+                </div>
+
+                <button type="submit" class="submit-btn">نشر المنشور</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- رسالة تأكيد -->
+    <div id="toast" class="toast"></div>
+
+    <script>
+        // كلمة مرور المشرف (يمكن تغييرها)
+        const ADMIN_PASSWORD = "admin123"; // غيرها بكلمة المرور التي تريدها
+        
+        // متغير لتتبع حالة تسجيل الدخول
+        let isAdmin = false;
+
+        // مصفوفة لتخزين المنشورات
+        let posts = [];
+
+        // التحقق من الجلسة المخزنة
+        function checkSession() {
+            const session = localStorage.getItem('adminSession');
+            if (session === 'true') {
+                isAdmin = true;
+                showAdminControls();
+                hideLoginScreen();
+            }
+            loadPosts();
+        }
+
+        // التحقق من كلمة المرور
+        function checkPassword() {
+            const password = document.getElementById('passwordInput').value;
+            if (password === ADMIN_PASSWORD) {
+                isAdmin = true;
+                localStorage.setItem('adminSession', 'true');
+                showAdminControls();
+                hideLoginScreen();
+            } else {
+                document.getElementById('loginError').classList.add('show');
+                document.getElementById('passwordInput').value = '';
+            }
+        }
+
+        // إظهار عناصر التحكم للمشرف
+        function showAdminControls() {
+            document.getElementById('addPostBtn').style.display = 'flex';
+            document.getElementById('logoutBtn').style.display = 'block';
+            document.getElementById('adminBadge').style.display = 'block';
+        }
+
+        // إخفاء شاشة تسجيل الدخول
+        function hideLoginScreen() {
+            document.getElementById('loginScreen').classList.add('hidden');
+        }
+
+        // تسجيل الخروج
+        function logout() {
+            isAdmin = false;
+            localStorage.removeItem('adminSession');
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('addPostBtn').style.display = 'none';
+            document.getElementById('logoutBtn').style.display = 'none';
+            document.getElementById('adminBadge').style.display = 'none';
+            document.getElementById('passwordInput').value = '';
+            document.getElementById('loginError').classList.remove('show');
+        }
+
+        // فتح نافذة الإضافة (مع التحقق من الصلاحية)
+        function openModal() {
+            if (!isAdmin) {
+                showToast('يجب تسجيل الدخول كمشرف أولاً');
+                return;
+            }
+            document.getElementById('postModal').classList.add('active');
+        }
+
+        // نسخ رابط المجلة
+        function copyMagazineLink() {
+            const url = window.location.href;
+            navigator.clipboard.writeText(url).then(() => {
+                showToast('تم نسخ رابط المجلة بنجاح');
+            }).catch(() => {
+                showToast('فشل نسخ الرابط');
+            });
+        }
+
+        // إظهار رسالة تأكيد
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // معالجة الضغط على Enter
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                checkPassword();
+            }
+        }
+
+        // إضافة منشور جديد (مع التحقق من الصلاحية)
+        function addNewPost(event) {
+            event.preventDefault();
+
+            if (!isAdmin) {
+                showToast('يجب تسجيل الدخول كمشرف أولاً');
+                closeModal();
+                return;
+            }
+
+            // جمع روابط الصور
+            const imageInputs = document.querySelectorAll('.image-url');
+            const images = Array.from(imageInputs)
+                .map(input => input.value.trim())
+                .filter(url => url !== '');
+
+            // إنشاء المنشور الجديد
+            const newPost = {
+                id: Date.now(),
+                type: document.getElementById('postType').value,
+                title: document.getElementById('postTitle').value,
+                text: document.getElementById('postText').value,
+                images: images.length > 0 ? images : [],
+                date: new Date().toISOString()
+            };
+
+            // إضافة المنشور إلى بداية المصفوفة
+            posts.unshift(newPost);
+            
+            // حفظ في localStorage
+            localStorage.setItem('magazinePosts', JSON.stringify(posts));
+            
+            // تحديث العرض
+            displayPosts();
+            
+            // إغلاق النافذة وتنظيف النموذج
+            closeModal();
+            showToast('تم إضافة المنشور بنجاح');
+        }
+
+        // حذف منشور (مع التحقق من الصلاحية)
+        function deletePost(postId) {
+            if (!isAdmin) {
+                showToast('يجب تسجيل الدخول كمشرف أولاً');
+                return;
+            }
+
+            if (confirm('هل أنت متأكد من حذف هذا المنشور؟')) {
+                posts = posts.filter(post => post.id !== postId);
+                localStorage.setItem('magazinePosts', JSON.stringify(posts));
+                displayPosts();
+                showToast('تم حذف المنشور بنجاح');
+            }
+        }
+
+        // باقي الدوال كما هي (loadPosts, displayPosts, formatDate, addImageInput, removeImageInput, closeModal, openImage)
+
+        // تحميل المنشورات
+        function loadPosts() {
+            const savedPosts = localStorage.getItem('magazinePosts');
+            if (savedPosts) {
+                posts = JSON.parse(savedPosts);
+            } else {
+                // بيانات افتراضية للبدء
+                posts = [
+                    {
+                        id: Date.now() - 86400000,
+                        type: 'تعميم',
+                        title: 'تعميم هام بخصوص الدوام الرسمي',
+                        text: 'نود إعلام جميع أعضاء القسم بأنه سيتم تطبيق نظام الدوام المرن ابتداءً من الأسبوع القادم. يرجى التواصل مع الإدارة لتحديد الجدول المناسب.',
+                        images: [
+                            'https://via.placeholder.com/800x400/667eea/ffffff?text=تعميم+1'
+                        ],
+                        date: new Date(Date.now() - 86400000).toISOString()
+                    }
+                ];
+            }
+            displayPosts();
+        }
+
+        // عرض المنشورات
+        function displayPosts() {
+            const container = document.getElementById('postsContainer');
+            
+            if (posts.length === 0) {
+                container.innerHTML = '<div class="no-posts">لا توجد منشورات بعد.</div>';
+                return;
+            }
+
+            // ترتيب المنشورات من الأحدث إلى الأقدم
+            const sortedPosts = [...posts].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            container.innerHTML = sortedPosts.map(post => `
+                <div class="post-card" data-post-id="${post.id}">
+                    <div class="post-header">
+                        <span class="post-type">${post.type}</span>
+                        <div>
+                            <span class="post-date">${formatDate(post.date)}</span>
+                            ${isAdmin ? `<button class="delete-post" onclick="deletePost(${post.id})">حذف</button>` : ''}
+                        </div>
+                    </div>
+                    <div class="post-content">
+                        <h2 class="post-title">${post.title}</h2>
+                        <div class="post-text">${post.text.replace(/\n/g, '<br>')}</div>
+                        ${post.images && post.images.length > 0 ? `
+                            <div class="post-images">
+                                ${post.images.map(img => `
+                                    <img src="${img}" alt="صورة المنشور" class="post-image" onclick="openImage('${img}')">
+                                `).join('')}
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // تنسيق التاريخ
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diffTime = Math.abs(now - date);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            if (diffDays === 0) return 'اليوم';
+            if (diffDays === 1) return 'أمس';
+            if (diffDays < 7) return `منذ ${diffDays} أيام`;
+            
+            return date.toLocaleDateString('ar-SA', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        // إغلاق نافذة الإضافة
+        function closeModal() {
+            document.getElementById('postModal').classList.remove('active');
+            document.getElementById('postForm').reset();
+            document.getElementById('imagesContainer').innerHTML = `
+                <div class="image-input-group">
+                    <input type="url" class="image-url" placeholder="رابط الصورة">
+                    <button type="button" class="remove-image-btn" onclick="removeImageInput(this)">✕</button>
+                </div>
+            `;
+        }
+
+        // إضافة حقل صورة جديد
+        function addImageInput() {
+            const container = document.getElementById('imagesContainer');
+            const newInput = document.createElement('div');
+            newInput.className = 'image-input-group';
+            newInput.innerHTML = `
+                <input type="url" class="image-url" placeholder="رابط الصورة">
+                <button type="button" class="remove-image-btn" onclick="removeImageInput(this)">✕</button>
+            `;
+            container.appendChild(newInput);
+        }
+
+        // إزالة حقل صورة
+        function removeImageInput(button) {
+            const container = document.getElementById('imagesContainer');
+            if (container.children.length > 1) {
+                button.parentElement.remove();
+            }
+        }
+
+        // فتح الصورة
+        function openImage(imageUrl) {
+            window.open(imageUrl, '_blank');
+        }
+
+        // التحقق من الجلسة عند بدء التشغيل
+        checkSession();
+    </script>
+</body>
+</html>
