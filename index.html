@@ -5,40 +5,89 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>مجلة القسم - التعاميم والمقالات</title>
     <style>
-        /* نفس التصميم السابق مع إضافة */
-        
-        /* شاشة تسجيل الدخول */
-        .login-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            transition: opacity 0.5s;
+            min-height: 100vh;
         }
 
-        .login-screen.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .login-box {
+        /* الهيدر */
+        .header {
             background: white;
-            padding: 3rem;
-            border-radius: 15px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-            width: 90%;
-            max-width: 400px;
-            text-align: center;
-            animation: fadeInUp 0.5s;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
-        @keyframes fadeInUp {
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .logo h1 {
+            color: #667eea;
+            font-size: 1.8rem;
+        }
+
+        .logo p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .add-post-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .add-post-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* المحتوى الرئيسي */
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        /* بطاقات المنشورات */
+        .posts-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .post-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
             from {
                 opacity: 0;
                 transform: translateY(30px);
@@ -49,33 +98,181 @@
             }
         }
 
-        .login-box h2 {
-            color: #333;
+        .post-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        .post-header {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .post-type {
+            background: rgba(255,255,255,0.2);
+            padding: 0.3rem 1rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+        }
+
+        .post-date {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .post-title {
+            font-size: 1.8rem;
             margin-bottom: 1rem;
-            font-size: 2rem;
+            color: #333;
         }
 
-        .login-box p {
-            color: #666;
-            margin-bottom: 2rem;
+        .post-content {
+            padding: 2rem;
         }
 
-        .password-input {
+        .post-text {
+            color: #555;
+            line-height: 1.8;
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* معرض الصور */
+        .post-images {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .post-image {
             width: 100%;
-            padding: 1rem;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .post-image:hover {
+            transform: scale(1.05);
+        }
+
+        /* الفوتر */
+        .footer {
+            background: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+            color: #666;
+        }
+
+        /* نافذة إضافة منشور جديد */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
             border: 2px solid #e0e0e0;
             border-radius: 8px;
             font-size: 1rem;
-            margin-bottom: 1.5rem;
             transition: border-color 0.3s;
         }
 
-        .password-input:focus {
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
             outline: none;
             border-color: #667eea;
         }
 
-        .login-btn {
+        .form-group textarea {
+            height: 150px;
+            resize: vertical;
+        }
+
+        .image-input-group {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .image-input-group input {
+            flex: 1;
+        }
+
+        .add-image-btn,
+        .remove-image-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .remove-image-btn {
+            background: #dc3545;
+        }
+
+        .submit-btn {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
@@ -87,23 +284,12 @@
             transition: transform 0.3s;
         }
 
-        .login-btn:hover {
+        .submit-btn:hover {
             transform: scale(1.02);
         }
 
-        .error-message {
-            color: #dc3545;
-            margin-top: 1rem;
-            font-size: 0.9rem;
-            display: none;
-        }
-
-        .error-message.show {
-            display: block;
-        }
-
-        /* زر تسجيل الخروج */
-        .logout-btn {
+        /* زر حذف المنشور */
+        .delete-post {
             background: #dc3545;
             color: white;
             border: none;
@@ -111,109 +297,40 @@
             border-radius: 5px;
             cursor: pointer;
             font-size: 0.9rem;
-            margin-right: 1rem;
+            transition: background 0.3s;
         }
 
-        .admin-badge {
-            background: #28a745;
-            color: white;
-            padding: 0.3rem 1rem;
-            border-radius: 50px;
-            font-size: 0.8rem;
-            margin-right: 1rem;
+        .delete-post:hover {
+            background: #c82333;
         }
 
-        .header-controls {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        /* زر نسخ الرابط */
-        .copy-link-btn {
-            background: #17a2b8;
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .copy-link-btn:hover {
-            background: #138496;
-        }
-
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #28a745;
-            color: white;
-            padding: 1rem 2rem;
-            border-radius: 50px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            z-index: 3000;
-            animation: slideUp 0.3s;
-            display: none;
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translate(-50%, 20px);
-            }
-            to {
-                opacity: 1;
-                transform: translate(-50%, 0);
-            }
-        }
-
-        .toast.show {
-            display: block;
+        /* رسالة عند عدم وجود منشورات */
+        .no-posts {
+            text-align: center;
+            padding: 4rem;
+            background: white;
+            border-radius: 15px;
+            color: #666;
+            font-size: 1.2rem;
         }
     </style>
 </head>
 <body>
-    <!-- شاشة تسجيل الدخول -->
-    <div id="loginScreen" class="login-screen">
-        <div class="login-box">
-            <h2>🔐 مجلة القسم</h2>
-            <p>الرجاء إدخال كلمة المرور للمشرفين</p>
-            <input type="password" id="passwordInput" class="password-input" placeholder="كلمة مرور المشرف" onkeypress="handleKeyPress(event)">
-            <button class="login-btn" onclick="checkPassword()">دخول</button>
-            <div id="loginError" class="error-message">كلمة المرور غير صحيحة</div>
-        </div>
-    </div>
-
     <header class="header">
         <div class="header-content">
             <div class="logo">
                 <h1>📚 مجلة القسم</h1>
                 <p>التعاميم والمقالات الرسمية</p>
             </div>
-            <div class="header-controls">
-                <span id="adminBadge" class="admin-badge" style="display: none;">👤 مشرف</span>
-                <button class="copy-link-btn" onclick="copyMagazineLink()">
-                    <span>🔗</span> نسخ رابط المجلة
-                </button>
-                <button id="addPostBtn" class="add-post-btn" onclick="openModal()" style="display: none;">
-                    <span>+</span> إضافة منشور جديد
-                </button>
-                <button id="logoutBtn" class="logout-btn" onclick="logout()" style="display: none;">
-                    تسجيل الخروج
-                </button>
-            </div>
+            <button class="add-post-btn" onclick="openModal()">
+                <span>+</span> إضافة منشور جديد
+            </button>
         </div>
     </header>
 
     <main class="container">
         <div id="postsContainer" class="posts-container">
-            <!-- سيتم إضافة المنشورات هنا -->
+            <!-- سيتم إضافة المنشورات هنا بواسطة JavaScript -->
         </div>
     </main>
 
@@ -266,162 +383,11 @@
         </div>
     </div>
 
-    <!-- رسالة تأكيد -->
-    <div id="toast" class="toast"></div>
-
     <script>
-        // كلمة مرور المشرف (يمكن تغييرها)
-        const ADMIN_PASSWORD = "admin123"; // غيرها بكلمة المرور التي تريدها
-        
-        // متغير لتتبع حالة تسجيل الدخول
-        let isAdmin = false;
-
         // مصفوفة لتخزين المنشورات
         let posts = [];
 
-        // التحقق من الجلسة المخزنة
-        function checkSession() {
-            const session = localStorage.getItem('adminSession');
-            if (session === 'true') {
-                isAdmin = true;
-                showAdminControls();
-                hideLoginScreen();
-            }
-            loadPosts();
-        }
-
-        // التحقق من كلمة المرور
-        function checkPassword() {
-            const password = document.getElementById('passwordInput').value;
-            if (password === ADMIN_PASSWORD) {
-                isAdmin = true;
-                localStorage.setItem('adminSession', 'true');
-                showAdminControls();
-                hideLoginScreen();
-            } else {
-                document.getElementById('loginError').classList.add('show');
-                document.getElementById('passwordInput').value = '';
-            }
-        }
-
-        // إظهار عناصر التحكم للمشرف
-        function showAdminControls() {
-            document.getElementById('addPostBtn').style.display = 'flex';
-            document.getElementById('logoutBtn').style.display = 'block';
-            document.getElementById('adminBadge').style.display = 'block';
-        }
-
-        // إخفاء شاشة تسجيل الدخول
-        function hideLoginScreen() {
-            document.getElementById('loginScreen').classList.add('hidden');
-        }
-
-        // تسجيل الخروج
-        function logout() {
-            isAdmin = false;
-            localStorage.removeItem('adminSession');
-            document.getElementById('loginScreen').classList.remove('hidden');
-            document.getElementById('addPostBtn').style.display = 'none';
-            document.getElementById('logoutBtn').style.display = 'none';
-            document.getElementById('adminBadge').style.display = 'none';
-            document.getElementById('passwordInput').value = '';
-            document.getElementById('loginError').classList.remove('show');
-        }
-
-        // فتح نافذة الإضافة (مع التحقق من الصلاحية)
-        function openModal() {
-            if (!isAdmin) {
-                showToast('يجب تسجيل الدخول كمشرف أولاً');
-                return;
-            }
-            document.getElementById('postModal').classList.add('active');
-        }
-
-        // نسخ رابط المجلة
-        function copyMagazineLink() {
-            const url = window.location.href;
-            navigator.clipboard.writeText(url).then(() => {
-                showToast('تم نسخ رابط المجلة بنجاح');
-            }).catch(() => {
-                showToast('فشل نسخ الرابط');
-            });
-        }
-
-        // إظهار رسالة تأكيد
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            toast.textContent = message;
-            toast.classList.add('show');
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
-        }
-
-        // معالجة الضغط على Enter
-        function handleKeyPress(event) {
-            if (event.key === 'Enter') {
-                checkPassword();
-            }
-        }
-
-        // إضافة منشور جديد (مع التحقق من الصلاحية)
-        function addNewPost(event) {
-            event.preventDefault();
-
-            if (!isAdmin) {
-                showToast('يجب تسجيل الدخول كمشرف أولاً');
-                closeModal();
-                return;
-            }
-
-            // جمع روابط الصور
-            const imageInputs = document.querySelectorAll('.image-url');
-            const images = Array.from(imageInputs)
-                .map(input => input.value.trim())
-                .filter(url => url !== '');
-
-            // إنشاء المنشور الجديد
-            const newPost = {
-                id: Date.now(),
-                type: document.getElementById('postType').value,
-                title: document.getElementById('postTitle').value,
-                text: document.getElementById('postText').value,
-                images: images.length > 0 ? images : [],
-                date: new Date().toISOString()
-            };
-
-            // إضافة المنشور إلى بداية المصفوفة
-            posts.unshift(newPost);
-            
-            // حفظ في localStorage
-            localStorage.setItem('magazinePosts', JSON.stringify(posts));
-            
-            // تحديث العرض
-            displayPosts();
-            
-            // إغلاق النافذة وتنظيف النموذج
-            closeModal();
-            showToast('تم إضافة المنشور بنجاح');
-        }
-
-        // حذف منشور (مع التحقق من الصلاحية)
-        function deletePost(postId) {
-            if (!isAdmin) {
-                showToast('يجب تسجيل الدخول كمشرف أولاً');
-                return;
-            }
-
-            if (confirm('هل أنت متأكد من حذف هذا المنشور؟')) {
-                posts = posts.filter(post => post.id !== postId);
-                localStorage.setItem('magazinePosts', JSON.stringify(posts));
-                displayPosts();
-                showToast('تم حذف المنشور بنجاح');
-            }
-        }
-
-        // باقي الدوال كما هي (loadPosts, displayPosts, formatDate, addImageInput, removeImageInput, closeModal, openImage)
-
-        // تحميل المنشورات
+        // تحميل المنشورات من localStorage عند بدء التشغيل
         function loadPosts() {
             const savedPosts = localStorage.getItem('magazinePosts');
             if (savedPosts) {
@@ -438,6 +404,17 @@
                             'https://via.placeholder.com/800x400/667eea/ffffff?text=تعميم+1'
                         ],
                         date: new Date(Date.now() - 86400000).toISOString()
+                    },
+                    {
+                        id: Date.now() - 172800000,
+                        type: 'مقال',
+                        title: 'أهمية البحث العلمي في تطوير القسم',
+                        text: 'نستعرض في هذا المقال دور البحث العلمي في تطوير الأداء الأكاديمي والمهني لأعضاء القسم، وأهمية المشاركة في المؤتمرات والندوات العلمية.',
+                        images: [
+                            'https://via.placeholder.com/800x400/764ba2/ffffff?text=مقالة+1',
+                            'https://via.placeholder.com/800x400/667eea/ffffff?text=بحث+علمي'
+                        ],
+                        date: new Date(Date.now() - 172800000).toISOString()
                     }
                 ];
             }
@@ -449,7 +426,7 @@
             const container = document.getElementById('postsContainer');
             
             if (posts.length === 0) {
-                container.innerHTML = '<div class="no-posts">لا توجد منشورات بعد.</div>';
+                container.innerHTML = '<div class="no-posts">لا توجد منشورات بعد. كن أول من ينشر!</div>';
                 return;
             }
 
@@ -462,7 +439,7 @@
                         <span class="post-type">${post.type}</span>
                         <div>
                             <span class="post-date">${formatDate(post.date)}</span>
-                            ${isAdmin ? `<button class="delete-post" onclick="deletePost(${post.id})">حذف</button>` : ''}
+                            <button class="delete-post" onclick="deletePost(${post.id})">حذف</button>
                         </div>
                     </div>
                     <div class="post-content">
@@ -498,6 +475,11 @@
             });
         }
 
+        // فتح نافذة الإضافة
+        function openModal() {
+            document.getElementById('postModal').classList.add('active');
+        }
+
         // إغلاق نافذة الإضافة
         function closeModal() {
             document.getElementById('postModal').classList.remove('active');
@@ -527,16 +509,60 @@
             const container = document.getElementById('imagesContainer');
             if (container.children.length > 1) {
                 button.parentElement.remove();
+            } else {
+                alert('يجب أن يحتوي المنشور على صورة واحدة على الأقل');
             }
         }
 
-        // فتح الصورة
+        // إضافة منشور جديد
+        function addNewPost(event) {
+            event.preventDefault();
+
+            // جمع روابط الصور
+            const imageInputs = document.querySelectorAll('.image-url');
+            const images = Array.from(imageInputs)
+                .map(input => input.value.trim())
+                .filter(url => url !== '');
+
+            // إنشاء المنشور الجديد
+            const newPost = {
+                id: Date.now(),
+                type: document.getElementById('postType').value,
+                title: document.getElementById('postTitle').value,
+                text: document.getElementById('postText').value,
+                images: images.length > 0 ? images : [],
+                date: new Date().toISOString()
+            };
+
+            // إضافة المنشور إلى بداية المصفوفة
+            posts.unshift(newPost);
+            
+            // حفظ في localStorage
+            localStorage.setItem('magazinePosts', JSON.stringify(posts));
+            
+            // تحديث العرض
+            displayPosts();
+            
+            // إغلاق النافذة وتنظيف النموذج
+            closeModal();
+        }
+
+        // حذف منشور
+        function deletePost(postId) {
+            if (confirm('هل أنت متأكد من حذف هذا المنشور؟')) {
+                posts = posts.filter(post => post.id !== postId);
+                localStorage.setItem('magazinePosts', JSON.stringify(posts));
+                displayPosts();
+            }
+        }
+
+        // فتح الصورة في نافذة جديدة
         function openImage(imageUrl) {
             window.open(imageUrl, '_blank');
         }
 
-        // التحقق من الجلسة عند بدء التشغيل
-        checkSession();
+        // تحميل المنشورات عند بدء التشغيل
+        loadPosts();
     </script>
 </body>
 </html>
