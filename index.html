@@ -3,10 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مجلة القسم - التعاميم والمقالات</title>
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <title>📚 مجلة القسم - النظام المتكامل</title>
     <style>
         * {
             margin: 0;
@@ -18,24 +15,18 @@
         body {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
+            padding: 20px;
         }
 
         .header {
             background: white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .header-content {
-            max-width: 1200px;
-            margin: 0 auto;
             padding: 1rem 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
         .logo h1 {
@@ -56,10 +47,10 @@
             border-radius: 50px;
             font-size: 1rem;
             cursor: pointer;
-            transition: transform 0.3s;
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            transition: transform 0.3s;
         }
 
         .admin-btn:hover {
@@ -158,33 +149,29 @@
             display: block;
         }
 
-        .admin-toolbar {
+        .admin-panel {
             background: white;
-            padding: 1rem 2rem;
-            margin-top: 1rem;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
             display: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
-        .admin-toolbar.active {
+        .admin-panel.active {
             display: block;
-        }
-
-        .admin-toolbar-content {
-            max-width: 1200px;
-            margin: 0 auto;
         }
 
         .admin-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
         }
 
         .admin-header h3 {
             color: #667eea;
+            font-size: 1.5rem;
         }
 
         .logout-btn {
@@ -203,7 +190,7 @@
         }
 
         .form-group {
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
         }
 
         .form-group label {
@@ -211,20 +198,29 @@
             margin-bottom: 0.5rem;
             color: #333;
             font-weight: 600;
+            font-size: 1.1rem;
         }
 
         .form-group input,
         .form-group select,
         .form-group textarea {
             width: 100%;
-            padding: 0.8rem;
+            padding: 1rem;
             border: 2px solid #e0e0e0;
             border-radius: 8px;
             font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
         }
 
         .form-group textarea {
-            height: 100px;
+            height: 120px;
             resize: vertical;
         }
 
@@ -238,14 +234,14 @@
             flex: 1;
         }
 
-        .add-image-btn,
-        .remove-image-btn {
+        .add-image-btn, .remove-image-btn {
             background: #667eea;
             color: white;
             border: none;
             padding: 0.5rem 1rem;
             border-radius: 5px;
             cursor: pointer;
+            font-size: 0.9rem;
         }
 
         .remove-image-btn {
@@ -256,18 +252,22 @@
             background: #28a745;
             color: white;
             border: none;
-            padding: 1rem;
+            padding: 1rem 2rem;
             border-radius: 8px;
             font-size: 1.1rem;
             cursor: pointer;
             width: 100%;
             margin-top: 1rem;
+            transition: transform 0.3s;
+        }
+
+        .submit-btn:hover {
+            transform: scale(1.02);
         }
 
         .container {
             max-width: 1200px;
             margin: 2rem auto;
-            padding: 0 2rem;
         }
 
         .posts-container {
@@ -282,6 +282,7 @@
             overflow: hidden;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             animation: slideIn 0.5s ease-out;
+            position: relative;
         }
 
         @keyframes slideIn {
@@ -362,11 +363,7 @@
             cursor: pointer;
             font-size: 0.9rem;
             margin-top: 1rem;
-            display: none;
-        }
-
-        .delete-post-btn.active {
-            display: inline-block;
+            transition: background 0.3s;
         }
 
         .delete-post-btn:hover {
@@ -387,6 +384,7 @@
             text-align: center;
             padding: 2rem;
             margin-top: 3rem;
+            border-radius: 15px;
             color: #666;
         }
 
@@ -396,26 +394,59 @@
             color: white;
             font-size: 1.2rem;
         }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #28a745;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 3000;
+            animation: slideUp 0.3s;
+            display: none;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translate(-50%, 20px);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, 0);
+            }
+        }
+
+        .toast.show {
+            display: block;
+        }
+
+        .toast.error {
+            background: #dc3545;
+        }
     </style>
 </head>
 <body>
     <header class="header">
-        <div class="header-content">
-            <div class="logo">
-                <h1>📚 مجلة القسم</h1>
-                <p>التعاميم والمقالات الرسمية</p>
-            </div>
-            <button class="admin-btn" onclick="showAdminLogin()">
-                <span>⚙️</span> الإدارة
-            </button>
+        <div class="logo">
+            <h1>📚 مجلة القسم</h1>
+            <p>التعاميم والمقالات الرسمية</p>
         </div>
+        <button class="admin-btn" onclick="showAdminLogin()">
+            <span>⚙️</span> الإدارة
+        </button>
     </header>
 
+    <!-- شاشة تسجيل الدخول -->
     <div id="adminLoginScreen" class="admin-login-screen">
         <div class="admin-login-box">
             <h2>🔐 دخول المشرفين</h2>
             <p>الرجاء إدخال رمز الإدارة</p>
-            <input type="password" id="adminPassword" placeholder="أدخل الرمز" onkeypress="handleKeyPress(event)">
+            <input type="password" id="adminPassword" placeholder="أدخل الرمز">
             <div class="admin-login-buttons">
                 <button class="login-submit" onclick="checkAdminPassword()">دخول</button>
                 <button class="login-cancel" onclick="hideAdminLogin()">إلغاء</button>
@@ -424,50 +455,48 @@
         </div>
     </div>
 
-    <div id="adminToolbar" class="admin-toolbar">
-        <div class="admin-toolbar-content">
-            <div class="admin-header">
-                <h3>⚙️ لوحة الإدارة</h3>
-                <button class="logout-btn" onclick="logout()">تسجيل الخروج</button>
-            </div>
+    <!-- لوحة الإدارة -->
+    <div id="adminPanel" class="admin-panel">
+        <div class="admin-header">
+            <h3>⚙️ لوحة الإدارة</h3>
+            <button class="logout-btn" onclick="logout()">تسجيل الخروج</button>
+        </div>
+        
+        <div class="add-post-form">
+            <h4 style="margin-bottom: 1rem;">إضافة تعميم جديد</h4>
             
-            <div class="add-post-form">
-                <h4 style="margin-bottom: 1rem;">إضافة تعميم جديد</h4>
-                <form id="postForm" onsubmit="addNewPost(event)">
-                    <div class="form-group">
-                        <label>نوع المنشور</label>
-                        <select id="postType" required>
-                            <option value="تعميم">📢 تعميم</option>
-                            <option value="مقال">📝 مقال</option>
-                            <option value="إعلان">📌 إعلان</option>
-                            <option value="خبر">📰 خبر</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label>عنوان المنشور</label>
-                        <input type="text" id="postTitle" placeholder="أدخل عنوان المنشور" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label>محتوى المنشور</label>
-                        <textarea id="postText" placeholder="أدخل محتوى المنشور" required></textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label>الصور</label>
-                        <div id="imagesContainer">
-                            <div class="image-input-group">
-                                <input type="url" class="image-url" placeholder="رابط الصورة">
-                                <button type="button" class="remove-image-btn" onclick="removeImageInput(this)">✕</button>
-                            </div>
-                        </div>
-                        <button type="button" class="add-image-btn" onclick="addImageInput()">+ إضافة صورة أخرى</button>
-                    </div>
-
-                    <button type="submit" class="submit-btn">نشر التعميم</button>
-                </form>
+            <div class="form-group">
+                <label>نوع المنشور</label>
+                <select id="postType">
+                    <option value="تعميم">📢 تعميم</option>
+                    <option value="مقال">📝 مقال</option>
+                    <option value="إعلان">📌 إعلان</option>
+                    <option value="خبر">📰 خبر</option>
+                </select>
             </div>
+
+            <div class="form-group">
+                <label>عنوان المنشور</label>
+                <input type="text" id="postTitle" placeholder="أدخل عنوان المنشور">
+            </div>
+
+            <div class="form-group">
+                <label>محتوى المنشور</label>
+                <textarea id="postText" placeholder="أدخل محتوى المنشور"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>الصور</label>
+                <div id="imagesContainer">
+                    <div class="image-input-group">
+                        <input type="url" class="image-url" placeholder="رابط الصورة">
+                        <button type="button" class="remove-image-btn" onclick="removeImageInput(this)">✕</button>
+                    </div>
+                </div>
+                <button type="button" class="add-image-btn" onclick="addImageInput()">+ إضافة صورة أخرى</button>
+            </div>
+
+            <button class="submit-btn" onclick="addPost()">📢 نشر التعميم</button>
         </div>
     </div>
 
@@ -481,163 +510,201 @@
         <p>جميع الحقوق محفوظة &copy; 2024 - مجلة القسم</p>
     </footer>
 
+    <div id="toast" class="toast"></div>
+
     <script>
         // ===========================================
-        // 🔥 إعدادات Firebase - ضع إعداداتك هنا
+        // 🔥 رابط السكريبت الجديد
         // ===========================================
-        const firebaseConfig = {
-            apiKey: "AIzaSy0CxIsvFLaFr80stmDncnKIS0vZY1HrK1I",
-            authDomain: "magazine-department.firebaseapp.com",
-            projectId: "magazine-department",
-            storageBucket: "magazine-department.firebasestorage.app",
-            messagingSenderId: "526806026207",
-            appId: "1:526806026207:web:f641ae6537fe20c63ca66a"
-        };
-
-        // تهيئة Firebase
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-
-        // ===========================================
-        // متغيرات النظام
-        // ===========================================
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbykDvt8HEjz0Y_WzIzpZyYWzZjU_Y7EtUdUu6QEqxtn1wI6iwu_5qhgFCedjHLF2ahNpg/exec';
+        
         const ADMIN_PASSWORD = "admin";
         let isAdminLoggedIn = false;
 
         // ===========================================
-        // جلب وعرض التعاميم
+        // دوال عرض التنبيهات
         // ===========================================
-        function loadPosts() {
-            const container = document.getElementById('postsContainer');
-            container.innerHTML = '<div class="loading">جاري تحميل التعاميم...</div>';
-            
-            db.collection("posts")
-              .orderBy("date", "desc")
-              .get()
-              .then((snapshot) => {
-                  if (snapshot.empty) {
-                      container.innerHTML = '<div class="no-posts">لا توجد تعاميم بعد</div>';
-                      return;
-                  }
-
-                  let postsHTML = '';
-                  snapshot.forEach((doc) => {
-                      const post = doc.data();
-                      post.id = doc.id;
-                      postsHTML += createPostHTML(post);
-                  });
-
-                  container.innerHTML = postsHTML;
-              })
-              .catch((error) => {
-                  console.error("خطأ في جلب البيانات:", error);
-                  container.innerHTML = '<div class="no-posts">حدث خطأ في تحميل التعاميم: ' + error.message + '</div>';
-              });
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.style.background = isError ? '#dc3545' : '#28a745';
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
         }
 
-        function createPostHTML(post) {
-            // تاريخ النشر
-            const date = new Date(post.date);
-            const dateText = date.toLocaleDateString('ar-SA', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-            });
+        // ===========================================
+        // جلب التعاميم
+        // ===========================================
+        async function loadPosts() {
+            const container = document.getElementById('postsContainer');
+            
+            try {
+                const response = await fetch(`${SCRIPT_URL}?action=get`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayPosts(data.posts);
+                } else {
+                    container.innerHTML = '<div class="no-posts">خطأ في تحميل البيانات</div>';
+                }
+            } catch (error) {
+                console.error('خطأ:', error);
+                container.innerHTML = '<div class="no-posts">حدث خطأ في الاتصال</div>';
+            }
+        }
 
-            let imagesHTML = '';
-            if (post.images && post.images.length > 0) {
-                imagesHTML = `
-                    <div class="post-images">
-                        ${post.images.map(img => `
-                            <img src="${img}" alt="صورة المنشور" class="post-image" onclick="window.open('${img}', '_blank')">
-                        `).join('')}
-                    </div>
-                `;
+        function displayPosts(posts) {
+            const container = document.getElementById('postsContainer');
+            
+            if (!posts || posts.length === 0) {
+                container.innerHTML = '<div class="no-posts">لا توجد تعاميم بعد</div>';
+                return;
             }
 
-            return `
-                <div class="post-card" data-post-id="${post.id}">
-                    <div class="post-header">
-                        <span class="post-type">${post.type}</span>
-                        <span class="post-date">${dateText}</span>
+            // ترتيب من الأحدث إلى الأقدم
+            const sortedPosts = [...posts].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            let html = '';
+            sortedPosts.forEach(post => {
+                const date = new Date(post.date);
+                const dateText = date.toLocaleString('ar-EG', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
+                let imagesHtml = '';
+                if (post.images && post.images.length > 0) {
+                    imagesHtml = '<div class="post-images">';
+                    post.images.forEach(img => {
+                        if (img) {
+                            imagesHtml += `<img src="${img}" alt="صورة" class="post-image" onclick="window.open('${img}', '_blank')">`;
+                        }
+                    });
+                    imagesHtml += '</div>';
+                }
+
+                html += `
+                    <div class="post-card">
+                        <div class="post-header">
+                            <span class="post-type">${escapeHtml(post.type)}</span>
+                            <span class="post-date">${dateText}</span>
+                        </div>
+                        <div class="post-content">
+                            <h2 class="post-title">${escapeHtml(post.title)}</h2>
+                            <div class="post-text">${escapeHtml(post.text).replace(/\n/g, '<br>')}</div>
+                            ${imagesHtml}
+                            ${isAdminLoggedIn ? `
+                                <button class="delete-post-btn" onclick="deletePost(${post.id})">
+                                    🗑️ حذف التعميم
+                                </button>
+                            ` : ''}
+                        </div>
                     </div>
-                    <div class="post-content">
-                        <h2 class="post-title">${post.title}</h2>
-                        <div class="post-text">${post.text.replace(/\n/g, '<br>')}</div>
-                        ${imagesHTML}
-                        ${isAdminLoggedIn ? `
-                            <button class="delete-post-btn active" onclick="deletePost('${post.id}')">
-                                🗑️ حذف التعميم
-                            </button>
-                        ` : ''}
-                    </div>
-                </div>
-            `;
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
         }
 
         // ===========================================
         // إضافة تعميم جديد
         // ===========================================
-        function addNewPost(event) {
-            event.preventDefault();
-
+        async function addPost() {
             if (!isAdminLoggedIn) {
-                alert('يجب تسجيل الدخول أولاً');
+                showToast('❌ يجب تسجيل الدخول أولاً', true);
                 return;
             }
 
-            const imageInputs = document.querySelectorAll('.image-url');
-            const images = Array.from(imageInputs)
-                .map(input => input.value.trim())
-                .filter(url => url !== '');
+            const type = document.getElementById('postType').value;
+            const title = document.getElementById('postTitle').value;
+            const text = document.getElementById('postText').value;
 
-            const newPost = {
-                type: document.getElementById('postType').value,
-                title: document.getElementById('postTitle').value,
-                text: document.getElementById('postText').value,
-                images: images,
-                date: new Date().toISOString()
-            };
+            if (!title || !text) {
+                showToast('❌ الرجاء كتابة العنوان والمحتوى', true);
+                return;
+            }
 
-            db.collection("posts").add(newPost)
-                .then(() => {
-                    alert('تم نشر التعميم بنجاح');
-                    document.getElementById('postForm').reset();
+            // جمع الصور
+            const images = [];
+            document.querySelectorAll('.image-url').forEach(input => {
+                if (input.value.trim()) {
+                    images.push(input.value.trim());
+                }
+            });
+
+            showToast('⏳ جاري النشر...');
+
+            try {
+                const url = `${SCRIPT_URL}?action=add&type=${encodeURIComponent(type)}&title=${encodeURIComponent(title)}&text=${encodeURIComponent(text)}&images=${encodeURIComponent(images.join(','))}`;
+                
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.success) {
+                    showToast('✅ تم النشر بنجاح');
+                    
+                    // تفريغ الحقول
+                    document.getElementById('postTitle').value = '';
+                    document.getElementById('postText').value = '';
                     document.getElementById('imagesContainer').innerHTML = `
                         <div class="image-input-group">
                             <input type="url" class="image-url" placeholder="رابط الصورة">
                             <button type="button" class="remove-image-btn" onclick="removeImageInput(this)">✕</button>
                         </div>
                     `;
-                    loadPosts(); // إعادة تحميل التعاميم
-                })
-                .catch((error) => {
-                    console.error("خطأ في الإضافة:", error);
-                    alert("حدث خطأ في إضافة التعميم: " + error.message);
-                });
+                    
+                    await loadPosts();
+                } else {
+                    showToast('❌ فشل النشر: ' + (data.error || 'خطأ غير معروف'), true);
+                }
+                
+            } catch (error) {
+                console.error('خطأ:', error);
+                showToast('❌ فشل النشر: ' + error.message, true);
+            }
         }
 
         // ===========================================
-        // حذف تعميم
+        // حذف تعميم (نسخة مضبوطة)
         // ===========================================
-        function deletePost(postId) {
+        async function deletePost(id) {
             if (!isAdminLoggedIn) {
-                alert('يجب تسجيل الدخول أولاً');
+                showToast('❌ يجب تسجيل الدخول أولاً', true);
                 return;
             }
 
-            if (confirm('هل أنت متأكد من حذف هذا التعميم؟')) {
-                db.collection("posts").doc(postId).delete()
-                    .then(() => {
-                        alert('تم حذف التعميم بنجاح');
-                        loadPosts();
-                    })
-                    .catch((error) => {
-                        console.error("خطأ في الحذف:", error);
-                        alert("حدث خطأ في حذف التعميم: " + error.message);
-                    });
+            if (!confirm('هل أنت متأكد من حذف هذا التعميم؟')) {
+                return;
+            }
+
+            showToast('⏳ جاري الحذف...');
+
+            try {
+                // استخدام GET مع الـ ID
+                const response = await fetch(`${SCRIPT_URL}?action=delete&id=${id}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    showToast('✅ تم الحذف بنجاح');
+                    await loadPosts(); // إعادة تحميل التعاميم بعد الحذف
+                } else {
+                    showToast('❌ فشل الحذف: ' + (data.error || 'خطأ غير معروف'), true);
+                }
+                
+            } catch (error) {
+                console.error('خطأ:', error);
+                showToast('❌ فشل الحذف: ' + error.message, true);
             }
         }
 
@@ -658,6 +725,49 @@
             const password = document.getElementById('adminPassword').value;
             if (password === ADMIN_PASSWORD) {
                 isAdminLoggedIn = true;
-                document.getElementById('adminToolbar').classList.add('active');
+                document.getElementById('adminPanel').classList.add('active');
                 hideAdminLogin();
-                loadPosts(); // إعادة تحم
+                loadPosts();
+                showToast('✅ مرحباً بك');
+            } else {
+                document.getElementById('loginError').classList.add('show');
+                showToast('❌ كلمة المرور خطأ', true);
+            }
+        }
+
+        function logout() {
+            isAdminLoggedIn = false;
+            document.getElementById('adminPanel').classList.remove('active');
+            loadPosts();
+            showToast('✅ تم تسجيل الخروج');
+        }
+
+        // ===========================================
+        // دوال الصور
+        // ===========================================
+        function addImageInput() {
+            const container = document.getElementById('imagesContainer');
+            const div = document.createElement('div');
+            div.className = 'image-input-group';
+            div.innerHTML = `
+                <input type="url" class="image-url" placeholder="رابط الصورة">
+                <button type="button" class="remove-image-btn" onclick="removeImageInput(this)">✕</button>
+            `;
+            container.appendChild(div);
+        }
+
+        function removeImageInput(button) {
+            const container = document.getElementById('imagesContainer');
+            if (container.children.length > 1) {
+                button.parentElement.remove();
+            }
+        }
+
+        // تحميل أولي
+        loadPosts();
+        
+        // تحديث كل 30 ثانية
+        setInterval(loadPosts, 30000);
+    </script>
+</body>
+</html>
