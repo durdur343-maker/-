@@ -470,7 +470,7 @@
             </div>
         </div>
     </div>
-    
+
     <main class="container">
         <div id="postsContainer" class="posts-container">
             <div class="loading">جاري تحميل التعاميم...</div>
@@ -478,12 +478,12 @@
     </main>
 
     <footer class="footer">
-        <p>جميع الحقوق محفوظة &copy; 2026 - مجلة القسم</p>
+        <p>جميع الحقوق محفوظة &copy; 2024 - مجلة القسم</p>
     </footer>
 
     <script>
         // ===========================================
-        // 🔥 إعدادات Firebase - تم التحديث ✅
+        // 🔥 إعدادات Firebase - ضع إعداداتك هنا
         // ===========================================
         const firebaseConfig = {
             apiKey: "AIzaSy0CxIsvFLaFr80stmDncnKIS0vZY1HrK1I",
@@ -505,14 +505,16 @@
         let isAdminLoggedIn = false;
 
         // ===========================================
-        // جلب وعرض التعاميم (الكل يشوفها)
+        // جلب وعرض التعاميم
         // ===========================================
         function loadPosts() {
+            const container = document.getElementById('postsContainer');
+            container.innerHTML = '<div class="loading">جاري تحميل التعاميم...</div>';
+            
             db.collection("posts")
               .orderBy("date", "desc")
-              .onSnapshot((snapshot) => {
-                  const container = document.getElementById('postsContainer');
-                  
+              .get()
+              .then((snapshot) => {
                   if (snapshot.empty) {
                       container.innerHTML = '<div class="no-posts">لا توجد تعاميم بعد</div>';
                       return;
@@ -526,23 +528,22 @@
                   });
 
                   container.innerHTML = postsHTML;
+              })
+              .catch((error) => {
+                  console.error("خطأ في جلب البيانات:", error);
+                  container.innerHTML = '<div class="no-posts">حدث خطأ في تحميل التعاميم: ' + error.message + '</div>';
               });
         }
 
         function createPostHTML(post) {
+            // تاريخ النشر
             const date = new Date(post.date);
-            const now = new Date();
-            const diffTime = Math.abs(now - date);
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-            
-            let dateText = '';
-            if (diffDays === 0) dateText = 'اليوم';
-            else if (diffDays === 1) dateText = 'أمس';
-            else if (diffDays < 7) dateText = `منذ ${diffDays} أيام`;
-            else dateText = date.toLocaleDateString('ar-SA', {
+            const dateText = date.toLocaleDateString('ar-SA', {
                 year: 'numeric',
                 month: 'long',
-                day: 'numeric'
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
             });
 
             let imagesHTML = '';
@@ -577,7 +578,7 @@
         }
 
         // ===========================================
-        // إضافة تعميم جديد (للمشرف فقط)
+        // إضافة تعميم جديد
         // ===========================================
         function addNewPost(event) {
             event.preventDefault();
@@ -602,6 +603,7 @@
 
             db.collection("posts").add(newPost)
                 .then(() => {
+                    alert('تم نشر التعميم بنجاح');
                     document.getElementById('postForm').reset();
                     document.getElementById('imagesContainer').innerHTML = `
                         <div class="image-input-group">
@@ -609,15 +611,16 @@
                             <button type="button" class="remove-image-btn" onclick="removeImageInput(this)">✕</button>
                         </div>
                     `;
+                    loadPosts(); // إعادة تحميل التعاميم
                 })
                 .catch((error) => {
                     console.error("خطأ في الإضافة:", error);
-                    alert("حدث خطأ في إضافة التعميم");
+                    alert("حدث خطأ في إضافة التعميم: " + error.message);
                 });
         }
 
         // ===========================================
-        // حذف تعميم (للمشرف فقط)
+        // حذف تعميم
         // ===========================================
         function deletePost(postId) {
             if (!isAdminLoggedIn) {
@@ -627,9 +630,13 @@
 
             if (confirm('هل أنت متأكد من حذف هذا التعميم؟')) {
                 db.collection("posts").doc(postId).delete()
+                    .then(() => {
+                        alert('تم حذف التعميم بنجاح');
+                        loadPosts();
+                    })
                     .catch((error) => {
                         console.error("خطأ في الحذف:", error);
-                        alert("حدث خطأ في حذف التعميم");
+                        alert("حدث خطأ في حذف التعميم: " + error.message);
                     });
             }
         }
@@ -653,49 +660,4 @@
                 isAdminLoggedIn = true;
                 document.getElementById('adminToolbar').classList.add('active');
                 hideAdminLogin();
-                loadPosts();
-            } else {
-                document.getElementById('loginError').classList.add('show');
-            }
-        }
-
-        function handleKeyPress(event) {
-            if (event.key === 'Enter') {
-                checkAdminPassword();
-            }
-        }
-
-        function logout() {
-            isAdminLoggedIn = false;
-            document.getElementById('adminToolbar').classList.remove('active');
-            loadPosts();
-        }
-
-        // ===========================================
-        // دوال الصور
-        // ===========================================
-        function addImageInput() {
-            const container = document.getElementById('imagesContainer');
-            const newInput = document.createElement('div');
-            newInput.className = 'image-input-group';
-            newInput.innerHTML = `
-                <input type="url" class="image-url" placeholder="رابط الصورة">
-                <button type="button" class="remove-image-btn" onclick="removeImageInput(this)">✕</button>
-            `;
-            container.appendChild(newInput);
-        }
-
-        function removeImageInput(button) {
-            const container = document.getElementById('imagesContainer');
-            if (container.children.length > 1) {
-                button.parentElement.remove();
-            }
-        }
-
-        // ===========================================
-        // بدء التطبيق
-        // ===========================================
-        loadPosts();
-    </script>
-</body>
-</html>
+                loadPosts(); // إعادة تحم
