@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>📚 مجلة القسم - النظام المتكامل</title>
+    <title>📚 مجلة القسم - مع صور Google Drive</title>
     <style>
         * {
             margin: 0;
@@ -56,6 +56,22 @@
         .admin-btn:hover {
             transform: scale(1.05);
             background: #444;
+        }
+
+        .notification-badge {
+            background: #ff4757;
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            margin-right: 0.5rem;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
         }
 
         .admin-login-screen {
@@ -283,6 +299,17 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             animation: slideIn 0.5s ease-out;
             position: relative;
+            transition: all 0.3s;
+        }
+
+        .post-card.new {
+            animation: newPost 1s ease-out;
+        }
+
+        @keyframes newPost {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); box-shadow: 0 0 20px #ffa502; }
+            100% { transform: scale(1); }
         }
 
         @keyframes slideIn {
@@ -348,10 +375,12 @@
             border-radius: 10px;
             cursor: pointer;
             transition: transform 0.3s;
+            border: 2px solid #667eea;
         }
 
         .post-image:hover {
             transform: scale(1.05);
+            border-color: #ffa502;
         }
 
         .delete-post-btn {
@@ -428,12 +457,22 @@
         .toast.error {
             background: #dc3545;
         }
+
+        .drive-icon {
+            display: inline-block;
+            background: #0F9D58;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            margin-right: 5px;
+        }
     </style>
 </head>
 <body>
     <header class="header">
         <div class="logo">
-            <h1>📚 مجلة القسم</h1>
+            <h1>📚 مجلة القسم <span id="notificationBadge" class="notification-badge" style="display: none;">جديد</span></h1>
             <p>التعاميم والمقالات الرسمية</p>
         </div>
         <button class="admin-btn" onclick="showAdminLogin()">
@@ -486,7 +525,7 @@
             </div>
 
             <div class="form-group">
-                <label>الصور</label>
+                <label>الصور (رابط Google Drive أو رابط عادي)</label>
                 <div id="imagesContainer">
                     <div class="image-input-group">
                         <input type="url" class="image-url" placeholder="رابط الصورة">
@@ -494,6 +533,7 @@
                     </div>
                 </div>
                 <button type="button" class="add-image-btn" onclick="addImageInput()">+ إضافة صورة أخرى</button>
+                <p style="color: #666; font-size: 0.8rem; margin-top: 5px;">مثال رابط Drive: https://drive.google.com/file/d/1XfQJuRCOL9daLWuTffG_6qiAK0rw0xUgpBkqxH22zCk/view</p>
             </div>
 
             <button class="submit-btn" onclick="addPost()">📢 نشر التعميم</button>
@@ -507,19 +547,54 @@
     </main>
 
     <footer class="footer">
-        <p>جميع الحقوق محفوظة &copy; 2026 - مجلة القسم</p>
+        <p>جميع الحقوق محفوظة &copy; 2024 - مجلة القسم</p>
     </footer>
 
     <div id="toast" class="toast"></div>
 
     <script>
         // ===========================================
-        // 🔥 رابط السكريبت الجديد
+        // 🔥 رابط السكريبت
         // ===========================================
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbykDvt8HEjz0Y_WzIzpZyYWzZjU_Y7EtUdUu6QEqxtn1wI6iwu_5qhgFCedjHLF2ahNpg/exec';
         
         const ADMIN_PASSWORD = "admin";
         let isAdminLoggedIn = false;
+        let lastPostId = 0;
+        let lastPostCount = 0;
+
+        // ===========================================
+        // دالة تحويل رابط Google Drive
+        // ===========================================
+        function getGoogleDriveImageUrl(url) {
+            if (!url) return url;
+            
+            // إذا كان الرابط من Google Drive
+            if (url.includes('drive.google.com')) {
+                let fileId = '';
+                
+                // صيغة /d/...
+                if (url.includes('/d/')) {
+                    fileId = url.split('/d/')[1].split('/')[0];
+                }
+                // صيغة id=...
+                else if (url.includes('id=')) {
+                    fileId = url.split('id=')[1].split('&')[0];
+                }
+                // صيغة open?id=...
+                else if (url.includes('open?')) {
+                    fileId = url.split('id=')[1].split('&')[0];
+                }
+                
+                if (fileId) {
+                    // رابط الصورة المصغرة
+                    return `https://drive.google.com/thumbnail?id=${fileId}&sz=w400`;
+                }
+            }
+            
+            // إذا كان رابط عادي، رجعه كما هو
+            return url;
+        }
 
         // ===========================================
         // دوال عرض التنبيهات
@@ -545,6 +620,23 @@
                 const data = await response.json();
                 
                 if (data.success) {
+                    // التحقق من وجود تعاميم جديدة
+                    if (lastPostCount > 0 && data.posts.length > lastPostCount) {
+                        const newPosts = data.posts.length - lastPostCount;
+                        showToast(`🔔 تم نشر ${newPosts} تعميم جديد`);
+                    }
+                    
+                    lastPostCount = data.posts.length;
+                    
+                    // تحديد آخر تعميم للتنبيه
+                    if (data.posts.length > 0) {
+                        const latestId = data.posts[0].id;
+                        if (lastPostId !== 0 && latestId > lastPostId) {
+                            showToast(`🔔 تعميم جديد: ${data.posts[0].title}`);
+                        }
+                        lastPostId = latestId;
+                    }
+                    
                     displayPosts(data.posts);
                 } else {
                     container.innerHTML = '<div class="no-posts">خطأ في تحميل البيانات</div>';
@@ -567,7 +659,7 @@
             const sortedPosts = [...posts].sort((a, b) => new Date(b.date) - new Date(a.date));
 
             let html = '';
-            sortedPosts.forEach(post => {
+            sortedPosts.forEach((post, index) => {
                 const date = new Date(post.date);
                 const dateText = date.toLocaleString('ar-EG', {
                     year: 'numeric',
@@ -582,14 +674,26 @@
                     imagesHtml = '<div class="post-images">';
                     post.images.forEach(img => {
                         if (img) {
-                            imagesHtml += `<img src="${img}" alt="صورة" class="post-image" onclick="window.open('${img}', '_blank')">`;
+                            // تحويل رابط Drive إلى رابط صورة مصغرة
+                            const imageUrl = getGoogleDriveImageUrl(img);
+                            const isDrive = img.includes('drive.google.com');
+                            
+                            imagesHtml += `
+                                <div style="position: relative;">
+                                    ${isDrive ? '<span class="drive-icon">📁 Drive</span>' : ''}
+                                    <img src="${imageUrl}" alt="صورة" class="post-image" onclick="window.open('${img}', '_blank')">
+                                </div>
+                            `;
                         }
                     });
                     imagesHtml += '</div>';
                 }
 
+                // إضافة تأثير للتعميم الجديد
+                const isNew = (index === 0 && post.id > lastPostId) ? 'new' : '';
+
                 html += `
-                    <div class="post-card">
+                    <div class="post-card ${isNew}" data-post-id="${post.id}">
                         <div class="post-header">
                             <span class="post-type">${escapeHtml(post.type)}</span>
                             <span class="post-date">${dateText}</span>
@@ -609,6 +713,11 @@
             });
 
             container.innerHTML = html;
+            
+            // تحديث آخر ID
+            if (sortedPosts.length > 0) {
+                lastPostId = sortedPosts[0].id;
+            }
         }
 
         function escapeHtml(text) {
@@ -676,7 +785,7 @@
         }
 
         // ===========================================
-        // حذف تعميم (نسخة مضبوطة)
+        // حذف تعميم
         // ===========================================
         async function deletePost(id) {
             if (!isAdminLoggedIn) {
@@ -691,13 +800,12 @@
             showToast('⏳ جاري الحذف...');
 
             try {
-                // استخدام GET مع الـ ID
                 const response = await fetch(`${SCRIPT_URL}?action=delete&id=${id}`);
                 const data = await response.json();
                 
                 if (data.success) {
                     showToast('✅ تم الحذف بنجاح');
-                    await loadPosts(); // إعادة تحميل التعاميم بعد الحذف
+                    await loadPosts();
                 } else {
                     showToast('❌ فشل الحذف: ' + (data.error || 'خطأ غير معروف'), true);
                 }
