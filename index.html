@@ -3,43 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>📚 مجلة القسم</title>
-    <!-- رابط السكريبت مباشر -->
-    <base href="/">
+    <title>📚 مجلة القسم - النظام الذكي</title>
     <style>
-        /* نفس التصميم السابق */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+        
         .header { background: white; padding: 1rem 2rem; border-radius: 15px; margin-bottom: 2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         .header-top { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem; }
-        .logo h1 { color: #667eea; font-size: 1.8rem; display: flex; align-items: center; gap: 10px; }
+        .logo h1 { color: #667eea; font-size: 1.8rem; }
         .logo p { color: #666; font-size: 0.9rem; }
+        
         .admin-btn { background: #333; color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 50px; font-size: 1rem; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: transform 0.3s; }
         .admin-btn:hover { transform: scale(1.05); background: #444; }
+        
         .search-section { background: #f0f2f5; padding: 1rem; border-radius: 15px; margin-top: 1rem; }
         .search-box { position: relative; width: 100%; }
-        .search-box input { width: 100%; padding: 1rem 1rem 1rem 3.5rem; border: 2px solid #e0e0e0; border-radius: 50px; font-size: 1rem; transition: all 0.3s; background: white; }
-        .search-box input:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 3px rgba(102,126,234,0.1); }
+        .search-box input { width: 100%; padding: 1rem 1rem 1rem 3.5rem; border: 2px solid #e0e0e0; border-radius: 50px; font-size: 1rem; }
+        .search-box input:focus { outline: none; border-color: #667eea; }
         .search-icon { position: absolute; right: 1.2rem; top: 50%; transform: translateY(-50%); color: #667eea; font-size: 1.2rem; }
-        .clear-search { position: absolute; left: 1.2rem; top: 50%; transform: translateY(-50%); background: none; border: none; color: #999; font-size: 1.2rem; cursor: pointer; display: none; }
-        .clear-search:hover { color: #dc3545; }
-        .search-stats { margin-top: 0.5rem; color: #666; font-size: 0.9rem; display: flex; justify-content: space-between; align-items: center; }
+        .clear-search { position: absolute; left: 1.2rem; top: 50%; transform: translateY(-50%); background: none; border: none; color: #999; cursor: pointer; display: none; }
+        
+        .search-stats { margin-top: 0.5rem; color: #666; display: flex; justify-content: space-between; }
         .result-count { background: #667eea; color: white; padding: 0.2rem 1rem; border-radius: 50px; font-size: 0.8rem; }
-        .posts-container { display: flex; flex-direction: column; gap: 2rem; margin-top: 2rem; }
-        .post-card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        
+        .admin-login-screen { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 2000; }
+        .admin-login-box { background: white; padding: 2rem; border-radius: 15px; width: 90%; max-width: 400px; text-align: center; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+        .admin-login-box h2 { color: #333; margin-bottom: 1rem; }
+        .admin-login-box input { width: 100%; padding: 1rem; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1rem; margin: 1rem 0; }
+        .admin-login-buttons { display: flex; gap: 1rem; }
+        .admin-login-buttons button { flex: 1; padding: 0.8rem; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; }
+        .login-submit { background: #667eea; color: white; }
+        .login-cancel { background: #dc3545; color: white; }
+        .login-error { color: #dc3545; margin-top: 1rem; display: none; }
+        
+        .admin-panel { background: white; padding: 2rem; border-radius: 15px; margin-bottom: 2rem; display: none; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+        .admin-header h3 { color: #667eea; font-size: 1.5rem; }
+        .logout-btn { background: #dc3545; color: white; border: none; padding: 0.5rem 1rem; border-radius: 5px; cursor: pointer; }
+        
+        .add-post-form { background: #f9f9f9; padding: 1.5rem; border-radius: 10px; }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; color: #333; font-weight: 600; font-size: 1.1rem; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 1rem; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1rem; transition: border-color 0.3s; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #667eea; }
+        .form-group textarea { height: 120px; resize: vertical; }
+        
+        .image-input-group { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; align-items: center; }
+        .image-input-group input { flex: 1; padding: 0.8rem; }
+        .preview-btn { background: #667eea; color: white; border: none; padding: 0.5rem 1rem; border-radius: 5px; cursor: pointer; }
+        .remove-btn { background: #dc3545; color: white; border: none; padding: 0.5rem 1rem; border-radius: 5px; cursor: pointer; }
+        .add-image-btn { background: #667eea; color: white; border: none; padding: 0.5rem 1rem; border-radius: 5px; cursor: pointer; margin-top: 0.5rem; }
+        
+        .preview-area { display: flex; gap: 1rem; flex-wrap: wrap; margin: 1rem 0; padding: 1rem; background: white; border-radius: 8px; min-height: 100px; }
+        .preview-placeholder { color: #999; width: 100%; text-align: center; }
+        .preview-image { position: relative; width: 100px; height: 100px; }
+        .preview-image img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; border: 2px solid #667eea; }
+        .preview-check { position: absolute; top: -5px; right: -5px; background: #28a745; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+        
+        .submit-btn { background: #28a745; color: white; border: none; padding: 1rem; border-radius: 8px; font-size: 1.1rem; cursor: pointer; width: 100%; margin-top: 1rem; transition: transform 0.3s; }
+        .submit-btn:hover { transform: scale(1.02); }
+        
+        .container { max-width: 1200px; margin: 2rem auto; }
+        .posts-container { display: flex; flex-direction: column; gap: 2rem; }
+        
+        .post-card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); animation: slideIn 0.5s ease-out; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        
         .post-header { padding: 1.5rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; display: flex; justify-content: space-between; align-items: center; }
         .post-type { background: rgba(255,255,255,0.2); padding: 0.3rem 1rem; border-radius: 50px; font-size: 0.9rem; }
         .post-date { font-size: 0.9rem; opacity: 0.9; }
+        
         .post-content { padding: 2rem; }
         .post-title { font-size: 1.8rem; margin-bottom: 1rem; color: #333; }
         .post-text { color: #555; line-height: 1.8; font-size: 1.1rem; margin-bottom: 1.5rem; }
+        
+        .post-images { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+        .post-image { width: 100%; height: 200px; object-fit: cover; border-radius: 10px; cursor: pointer; transition: transform 0.3s; border: 2px solid #667eea; }
+        .post-image:hover { transform: scale(1.05); border-color: #ffa502; }
+        
+        .delete-post-btn { background: #dc3545; color: white; border: none; padding: 0.5rem 1rem; border-radius: 5px; cursor: pointer; margin-top: 1rem; }
+        
         .footer { background: white; text-align: center; padding: 2rem; margin-top: 3rem; border-radius: 15px; color: #666; }
         .loading { text-align: center; padding: 2rem; color: white; font-size: 1.2rem; }
         .no-posts { text-align: center; padding: 4rem; background: white; border-radius: 15px; color: #666; font-size: 1.2rem; }
+        
         .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #28a745; color: white; padding: 1rem 2rem; border-radius: 50px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); z-index: 3000; animation: slideUp 0.3s; display: none; }
         @keyframes slideUp { from { opacity: 0; transform: translate(-50%, 20px); } to { opacity: 1; transform: translate(-50%, 0); } }
         .toast.show { display: block; }
         .toast.error { background: #dc3545; }
+        
+        .info-box { background: #e8f0fe; padding: 10px; border-radius: 8px; margin-bottom: 10px; color: #333; font-size: 0.9rem; }
+        .info-box p { margin: 5px 0; }
     </style>
 </head>
 <body>
@@ -54,7 +109,7 @@
             </button>
         </div>
 
-        <!-- قسم البحث -->
+        <!-- البحث -->
         <div class="search-section">
             <div class="search-box">
                 <span class="search-icon">🔍</span>
@@ -69,44 +124,72 @@
     </header>
 
     <!-- شاشة تسجيل الدخول -->
-    <div id="adminLoginScreen" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.8); justify-content:center; align-items:center; z-index:2000;">
-        <div style="background:white; padding:2rem; border-radius:15px; width:90%; max-width:400px; text-align:center;">
+    <div class="admin-login-screen" id="adminLoginScreen">
+        <div class="admin-login-box">
             <h2>🔐 دخول المشرفين</h2>
-            <input type="password" id="adminPassword" placeholder="أدخل الرمز" style="width:100%; padding:1rem; margin:1rem 0; border:2px solid #e0e0e0; border-radius:8px;">
-            <div>
-                <button onclick="checkAdminPassword()" style="background:#667eea; color:white; border:none; padding:0.8rem 1.5rem; border-radius:8px; cursor:pointer; margin:0.5rem;">دخول</button>
-                <button onclick="hideAdminLogin()" style="background:#dc3545; color:white; border:none; padding:0.8rem 1.5rem; border-radius:8px; cursor:pointer;">إلغاء</button>
+            <input type="password" id="adminPassword" placeholder="أدخل الرمز">
+            <div class="admin-login-buttons">
+                <button class="login-submit" onclick="checkAdminPassword()">دخول</button>
+                <button class="login-cancel" onclick="hideAdminLogin()">إلغاء</button>
             </div>
-            <div id="loginError" style="color:#dc3545; margin-top:1rem; display:none;">الرمز غير صحيح</div>
+            <div class="login-error" id="loginError">الرمز غير صحيح</div>
         </div>
     </div>
 
     <!-- لوحة الإدارة -->
-    <div id="adminPanel" style="background:white; padding:2rem; border-radius:15px; margin-bottom:2rem; display:none; box-shadow:0 4px 15px rgba(0,0,0,0.1);">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
-            <h3 style="color:#667eea;">⚙️ لوحة الإدارة</h3>
-            <button onclick="logout()" style="background:#dc3545; color:white; border:none; padding:0.5rem 1rem; border-radius:5px; cursor:pointer;">تسجيل الخروج</button>
+    <div class="admin-panel" id="adminPanel">
+        <div class="admin-header">
+            <h3>⚙️ لوحة الإدارة</h3>
+            <button class="logout-btn" onclick="logout()">تسجيل الخروج</button>
         </div>
-        <div class="add-post-form" style="background:#f9f9f9; padding:1.5rem; border-radius:10px;">
-            <h4 style="margin-bottom:1rem;">إضافة تعميم جديد</h4>
-            <div style="margin-bottom:1rem;">
-                <label style="display:block; margin-bottom:0.5rem; color:#333; font-weight:600;">نوع المنشور</label>
-                <select id="postType" style="width:100%; padding:1rem; border:2px solid #e0e0e0; border-radius:8px;">
+        
+        <div class="add-post-form">
+            <h4 style="margin-bottom: 1rem;">إضافة تعميم جديد</h4>
+            
+            <div class="info-box">
+                <p>✨ نظام ذكي: الصق رابط Drive مباشرة (طويل أو قصير) وسيتم تحويله تلقائياً</p>
+                <p>📌 مثال: https://drive.google.com/file/d/1jOqjWl25FESHs53KTSTZa1xpT1oe26Mh/view</p>
+            </div>
+            
+            <div class="form-group">
+                <label>نوع المنشور</label>
+                <select id="postType">
                     <option value="تعميم">📢 تعميم</option>
                     <option value="مقال">📝 مقال</option>
                     <option value="إعلان">📌 إعلان</option>
                     <option value="خبر">📰 خبر</option>
                 </select>
             </div>
-            <div style="margin-bottom:1rem;">
-                <label style="display:block; margin-bottom:0.5rem; color:#333; font-weight:600;">عنوان المنشور</label>
-                <input type="text" id="postTitle" placeholder="أدخل عنوان المنشور" style="width:100%; padding:1rem; border:2px solid #e0e0e0; border-radius:8px;">
+
+            <div class="form-group">
+                <label>عنوان المنشور</label>
+                <input type="text" id="postTitle" placeholder="أدخل عنوان المنشور">
             </div>
-            <div style="margin-bottom:1rem;">
-                <label style="display:block; margin-bottom:0.5rem; color:#333; font-weight:600;">محتوى المنشور</label>
-                <textarea id="postText" placeholder="أدخل محتوى المنشور" style="width:100%; padding:1rem; border:2px solid #e0e0e0; border-radius:8px; height:120px;"></textarea>
+
+            <div class="form-group">
+                <label>محتوى المنشور</label>
+                <textarea id="postText" placeholder="أدخل محتوى المنشور"></textarea>
             </div>
-            <button onclick="addPost()" style="background:#28a745; color:white; border:none; padding:1rem; border-radius:8px; font-size:1.1rem; cursor:pointer; width:100%; margin-top:1rem;">📢 نشر التعميم</button>
+
+            <!-- قسم الصور الذكي -->
+            <div class="form-group">
+                <label>📸 صور Google Drive</label>
+                <div id="imagesContainer">
+                    <div class="image-input-group">
+                        <input type="text" class="image-id" placeholder="الصق رابط Drive أو ID الصورة">
+                        <button class="preview-btn" onclick="previewImage(this)">🔍 معاينة</button>
+                        <button class="remove-btn" onclick="removeImageInput(this)">✕</button>
+                    </div>
+                </div>
+                <button class="add-image-btn" onclick="addImageInput()">+ إضافة صورة أخرى</button>
+            </div>
+
+            <!-- منطقة المعاينة -->
+            <div class="preview-area" id="previewArea">
+                <p class="preview-placeholder">ستظهر معاينة الصور هنا</p>
+            </div>
+
+            <button class="submit-btn" onclick="addPost()">📢 نشر التعميم</button>
         </div>
     </div>
 
@@ -117,53 +200,124 @@
     </main>
 
     <footer class="footer">
-        <p>جميع الحقوق محفوظة © 2024 - مجلة القسم</p>
+        <p>جميع الحقوق محفوظة © 2026 - مجلة القسم</p>
     </footer>
 
     <div id="toast" class="toast"></div>
 
     <script>
+        // ===== الإعدادات الأساسية =====
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbykDvt8HEjz0Y_WzIzpZyYWzZjU_Y7EtUdUu6QEqxtn1wI6iwu_5qhgFCedjHLF2ahNpg/exec';
         const ADMIN_PASSWORD = "admin";
         let isAdminLoggedIn = false;
         let allPosts = [];
 
-        function showAdminLogin() {
-            document.getElementById('adminLoginScreen').style.display = 'flex';
+        // ===== دوال الصور الذكية =====
+        function addImageInput() {
+            const container = document.getElementById('imagesContainer');
+            const div = document.createElement('div');
+            div.className = 'image-input-group';
+            div.innerHTML = `
+                <input type="text" class="image-id" placeholder="الصق رابط Drive أو ID الصورة">
+                <button class="preview-btn" onclick="previewImage(this)">🔍 معاينة</button>
+                <button class="remove-btn" onclick="removeImageInput(this)">✕</button>
+            `;
+            container.appendChild(div);
         }
 
-        function hideAdminLogin() {
-            document.getElementById('adminLoginScreen').style.display = 'none';
+        function previewImage(btn) {
+            const input = btn.parentElement.querySelector('.image-id');
+            const rawInput = input.value.trim();
+            if (!rawInput) {
+                showToast('❌ أدخل رابط أو ID الصورة أولاً', true);
+                return;
+            }
+            
+            // استخراج ID ذكياً
+            const extractedId = extractDriveId(rawInput);
+            if (!extractedId) {
+                showToast('❌ لم نتمكن من استخراج ID صحيح', true);
+                return;
+            }
+            
+            const previewArea = document.getElementById('previewArea');
+            const imageUrl = `https://drive.google.com/uc?export=view&id=${extractedId}`;
+            
+            // إزالة النص الافتراضي
+            if (previewArea.children.length === 1 && previewArea.children[0].classList.contains('preview-placeholder')) {
+                previewArea.innerHTML = '';
+            }
+            
+            // إضافة الصورة للمعاينة
+            const imgDiv = document.createElement('div');
+            imgDiv.className = 'preview-image';
+            imgDiv.innerHTML = `
+                <img src="${imageUrl}" onerror="this.parentElement.remove(); showToast('❌ ID غير صحيح', true)">
+                <span class="preview-check">✓</span>
+            `;
+            previewArea.appendChild(imgDiv);
+            showToast('✅ تمت المعاينة');
         }
 
-        function checkAdminPassword() {
-            const password = document.getElementById('adminPassword').value;
-            if (password === ADMIN_PASSWORD) {
-                isAdminLoggedIn = true;
-                document.getElementById('adminPanel').style.display = 'block';
-                hideAdminLogin();
-                loadPosts();
-            } else {
-                document.getElementById('loginError').style.display = 'block';
+        function removeImageInput(btn) {
+            if (document.querySelectorAll('.image-id').length > 1) {
+                btn.parentElement.remove();
+                updatePreview();
             }
         }
 
-        function logout() {
-            isAdminLoggedIn = false;
-            document.getElementById('adminPanel').style.display = 'none';
-            loadPosts();
+        function updatePreview() {
+            const previewArea = document.getElementById('previewArea');
+            previewArea.innerHTML = '<p class="preview-placeholder">ستظهر معاينة الصور هنا</p>';
         }
 
+        // دالة ذكية لاستخراج ID من أي صيغة رابط Drive
+        function extractDriveId(input) {
+            input = input.trim();
+            
+            // 1. إذا كان المدخل هو ID فقط (مجرد أحرف وأرقام بطول مناسب)
+            if (input.match(/^[a-zA-Z0-9_-]{25,}$/)) {
+                return input; // يعتبره ID مباشرة
+            }
+            
+            let fileId = null;
+            
+            // 2. استخراج من الرابط الطويل /d/...
+            if (input.includes('/d/')) {
+                fileId = input.split('/d/')[1].split('/')[0];
+            }
+            // 3. استخراج من ?id=...
+            else if (input.includes('id=')) {
+                fileId = input.split('id=')[1].split('&')[0];
+            }
+            // 4. استخراج من /open?id=...
+            else if (input.includes('open?')) {
+                fileId = input.split('id=')[1].split('&')[0];
+            }
+            // 5. استخراج من uc?export=view&id=...
+            else if (input.includes('uc?export=view&id=')) {
+                fileId = input.split('uc?export=view&id=')[1].split('&')[0];
+            }
+
+            if (fileId) {
+                // تنظيف الـ ID من أية أجزاء إضافية
+                fileId = fileId.split('?')[0].split('#')[0];
+                return fileId;
+            }
+            
+            return null; // لم يتم التعرف على صيغة
+        }
+
+        // ===== دوال العرض =====
         function showToast(message, isError = false) {
             const toast = document.getElementById('toast');
             toast.textContent = message;
             toast.style.background = isError ? '#dc3545' : '#28a745';
             toast.classList.add('show');
-            setTimeout(() => { toast.classList.remove('show'); }, 3000);
+            setTimeout(() => toast.classList.remove('show'), 3000);
         }
 
         async function loadPosts() {
-            const container = document.getElementById('postsContainer');
             try {
                 const response = await fetch(`${SCRIPT_URL}?action=get`);
                 const data = await response.json();
@@ -171,40 +325,42 @@
                     allPosts = data.posts;
                     document.getElementById('searchCount').textContent = allPosts.length;
                     filterPosts(document.getElementById('searchInput').value);
-                } else {
-                    container.innerHTML = '<div class="no-posts">خطأ في تحميل البيانات</div>';
                 }
             } catch (error) {
-                container.innerHTML = '<div class="no-posts">حدث خطأ في الاتصال</div>';
+                document.getElementById('postsContainer').innerHTML = '<div class="no-posts">حدث خطأ في الاتصال</div>';
             }
         }
 
-        function filterPosts(searchTerm) {
+        function displayPosts(posts) {
             const container = document.getElementById('postsContainer');
-            if (!allPosts.length) {
-                container.innerHTML = '<div class="no-posts">لا توجد تعاميم بعد</div>';
+            
+            if (!posts.length) {
+                container.innerHTML = '<div class="no-posts">لا توجد تعاميم</div>';
                 return;
             }
 
-            let filteredPosts = allPosts;
-            if (searchTerm) {
-                filteredPosts = allPosts.filter(post => 
-                    post.title.toLowerCase().includes(searchTerm.toLowerCase())
-                );
-            }
+            posts.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-            if (filteredPosts.length === 0) {
-                container.innerHTML = `<div class="no-posts">لا توجد نتائج لـ "${searchTerm}"</div>`;
-                return;
-            }
-
-            const sortedPosts = filteredPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
             let html = '';
-            sortedPosts.forEach(post => {
+            posts.forEach(post => {
                 const date = new Date(post.date).toLocaleString('ar-EG', {
                     year: 'numeric', month: 'long', day: 'numeric',
                     hour: '2-digit', minute: '2-digit'
                 });
+
+                let imagesHtml = '';
+                if (post.images && post.images.length) {
+                    imagesHtml = '<div class="post-images">';
+                    post.images.forEach(img => {
+                        if (img) {
+                            imagesHtml += `
+                                <img src="${img}" class="post-image" onclick="window.open('${img}','_blank')">
+                            `;
+                        }
+                    });
+                    imagesHtml += '</div>';
+                }
+
                 html += `
                     <div class="post-card">
                         <div class="post-header">
@@ -212,12 +368,11 @@
                             <span class="post-date">${date}</span>
                         </div>
                         <div class="post-content">
-                            <h2 class="post-title">${post.title}</h2>
-                            <div class="post-text">${post.text.replace(/\n/g, '<br>')}</div>
+                            <h2 class="post-title">${escapeHtml(post.title)}</h2>
+                            <div class="post-text">${escapeHtml(post.text).replace(/\n/g, '<br>')}</div>
+                            ${imagesHtml}
                             ${isAdminLoggedIn ? `
-                                <button class="delete-post-btn" onclick="deletePost(${post.id})" style="background:#dc3545; color:white; border:none; padding:0.5rem 1rem; border-radius:5px; cursor:pointer; margin-top:1rem;">
-                                    🗑️ حذف التعميم
-                                </button>
+                                <button class="delete-post-btn" onclick="deletePost(${post.id})">🗑️ حذف التعميم</button>
                             ` : ''}
                         </div>
                     </div>
@@ -226,58 +381,6 @@
             container.innerHTML = html;
         }
 
-        function handleSearch() {
-            const searchTerm = document.getElementById('searchInput').value;
-            document.getElementById('clearSearchBtn').style.display = searchTerm ? 'block' : 'none';
-            filterPosts(searchTerm);
-        }
-
-        function clearSearch() {
-            document.getElementById('searchInput').value = '';
-            document.getElementById('clearSearchBtn').style.display = 'none';
-            filterPosts('');
-        }
-
-        async function addPost() {
-            if (!isAdminLoggedIn) { showToast('❌ يجب تسجيل الدخول أولاً', true); return; }
-            const type = document.getElementById('postType').value;
-            const title = document.getElementById('postTitle').value;
-            const text = document.getElementById('postText').value;
-            if (!title || !text) { showToast('❌ الرجاء كتابة العنوان والمحتوى', true); return; }
+        function escapeHtml(text) {
+            const div = document.createElement('div');
             
-            try {
-                const url = `${SCRIPT_URL}?action=add&type=${encodeURIComponent(type)}&title=${encodeURIComponent(title)}&text=${encodeURIComponent(text)}`;
-                const response = await fetch(url);
-                const data = await response.json();
-                if (data.success) {
-                    showToast('✅ تم النشر بنجاح');
-                    document.getElementById('postTitle').value = '';
-                    document.getElementById('postText').value = '';
-                    await loadPosts();
-                }
-            } catch (error) {
-                showToast('❌ فشل النشر', true);
-            }
-        }
-
-        async function deletePost(id) {
-            if (!isAdminLoggedIn) { showToast('❌ يجب تسجيل الدخول أولاً', true); return; }
-            if (!confirm('هل أنت متأكد؟')) return;
-            
-            try {
-                const response = await fetch(`${SCRIPT_URL}?action=delete&id=${id}`);
-                const data = await response.json();
-                if (data.success) {
-                    showToast('✅ تم الحذف بنجاح');
-                    await loadPosts();
-                }
-            } catch (error) {
-                showToast('❌ فشل الحذف', true);
-            }
-        }
-
-        loadPosts();
-        setInterval(loadPosts, 30000);
-    </script>
-</body>
-</html>
