@@ -3,566 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>📚 مجلة القسم - مع البحث</title>
+    <title>📚 مجلة القسم</title>
+    <!-- رابط السكريبت مباشر -->
+    <base href="/">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-        .header {
-            background: white;
-            padding: 1rem 2rem;
-            border-radius: 15px;
-            margin-bottom: 2rem;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-        .header-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .logo h1 {
-            color: #667eea;
-            font-size: 1.8rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .logo p {
-            color: #666;
-            font-size: 0.9rem;
-        }
-
-        .admin-btn {
-            background: #333;
-            color: white;
-            border: none;
-            padding: 0.8rem 1.5rem;
-            border-radius: 50px;
-            font-size: 1rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: transform 0.3s;
-        }
-
-        .admin-btn:hover {
-            transform: scale(1.05);
-            background: #444;
-        }
-
-        /* ===== شريط البحث ===== */
-        .search-section {
-            background: #f0f2f5;
-            padding: 1rem;
-            border-radius: 15px;
-            margin-top: 1rem;
-        }
-
-        .search-box {
-            position: relative;
-            width: 100%;
-        }
-
-        .search-box input {
-            width: 100%;
-            padding: 1rem 1rem 1rem 3.5rem;
-            border: 2px solid #e0e0e0;
-            border-radius: 50px;
-            font-size: 1rem;
-            transition: all 0.3s;
-            background: white;
-        }
-
-        .search-box input:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        .search-icon {
-            position: absolute;
-            right: 1.2rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #667eea;
-            font-size: 1.2rem;
-        }
-
-        .clear-search {
-            position: absolute;
-            left: 1.2rem;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            color: #999;
-            font-size: 1.2rem;
-            cursor: pointer;
-            display: none;
-            transition: color 0.3s;
-        }
-
-        .clear-search:hover {
-            color: #dc3545;
-        }
-
-        .search-stats {
-            margin-top: 0.5rem;
-            color: #666;
-            font-size: 0.9rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .result-count {
-            background: #667eea;
-            color: white;
-            padding: 0.2rem 1rem;
-            border-radius: 50px;
-            font-size: 0.8rem;
-        }
-
-        .no-results {
-            text-align: center;
-            padding: 3rem;
-            background: white;
-            border-radius: 15px;
-            color: #666;
-        }
-
-        .notification-badge {
-            background: #ff4757;
-            color: white;
-            padding: 0.2rem 0.5rem;
-            border-radius: 50px;
-            font-size: 0.8rem;
-            margin-right: 0.5rem;
-            animation: pulse 1s infinite;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-
-        .admin-login-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.8);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-        }
-
-        .admin-login-screen.active {
-            display: flex;
-        }
-
-        .admin-login-box {
-            background: white;
-            padding: 2rem;
-            border-radius: 15px;
-            width: 90%;
-            max-width: 400px;
-            text-align: center;
-            animation: fadeIn 0.3s;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: scale(0.9);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        .admin-login-box h2 {
-            color: #333;
-            margin-bottom: 1rem;
-        }
-
-        .admin-login-box input {
-            width: 100%;
-            padding: 1rem;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 1rem;
-            margin: 1rem 0;
-        }
-
-        .admin-login-box input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        .admin-login-buttons {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .admin-login-buttons button {
-            flex: 1;
-            padding: 0.8rem;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1rem;
-        }
-
-        .login-submit {
-            background: #667eea;
-            color: white;
-        }
-
-        .login-cancel {
-            background: #dc3545;
-            color: white;
-        }
-
-        .login-error {
-            color: #dc3545;
-            margin-top: 1rem;
-            display: none;
-        }
-
-        .login-error.show {
-            display: block;
-        }
-
-        .admin-panel {
-            background: white;
-            padding: 2rem;
-            border-radius: 15px;
-            margin-bottom: 2rem;
-            display: none;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-
-        .admin-panel.active {
-            display: block;
-        }
-
-        .admin-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .admin-header h3 {
-            color: #667eea;
-            font-size: 1.5rem;
-        }
-
-        .logout-btn {
-            background: #dc3545;
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .add-post-form {
-            background: #f9f9f9;
-            padding: 1.5rem;
-            border-radius: 10px;
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: #333;
-            font-weight: 600;
-            font-size: 1.1rem;
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 1rem;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: border-color 0.3s;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        .form-group textarea {
-            height: 120px;
-            resize: vertical;
-        }
-
-        .image-input-group {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .image-input-group input {
-            flex: 1;
-        }
-
-        .add-image-btn, .remove-image-btn {
-            background: #667eea;
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.9rem;
-        }
-
-        .remove-image-btn {
-            background: #dc3545;
-        }
-
-        .submit-btn {
-            background: #28a745;
-            color: white;
-            border: none;
-            padding: 1rem 2rem;
-            border-radius: 8px;
-            font-size: 1.1rem;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 1rem;
-            transition: transform 0.3s;
-        }
-
-        .submit-btn:hover {
-            transform: scale(1.02);
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 2rem auto;
-        }
-
-        .posts-container {
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
-        }
-
-        .post-card {
-            background: white;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            animation: slideIn 0.5s ease-out;
-            position: relative;
-            transition: all 0.3s;
-        }
-
-        .post-card.new {
-            animation: newPost 1s ease-out;
-        }
-
-        @keyframes newPost {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.02); box-shadow: 0 0 20px #ffa502; }
-            100% { transform: scale(1); }
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .post-header {
-            padding: 1.5rem;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .post-type {
-            background: rgba(255,255,255,0.2);
-            padding: 0.3rem 1rem;
-            border-radius: 50px;
-            font-size: 0.9rem;
-        }
-
-        .post-date {
-            font-size: 0.9rem;
-            opacity: 0.9;
-        }
-
-        .post-content {
-            padding: 2rem;
-        }
-
-        .post-title {
-            font-size: 1.8rem;
-            margin-bottom: 1rem;
-            color: #333;
-        }
-
-        .post-text {
-            color: #555;
-            line-height: 1.8;
-            font-size: 1.1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .post-images {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1rem;
-            margin: 1.5rem 0;
-        }
-
-        .post-image {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: transform 0.3s;
-            border: 2px solid #667eea;
-        }
-
-        .post-image:hover {
-            transform: scale(1.05);
-            border-color: #ffa502;
-        }
-
-        .delete-post-btn {
-            background: #dc3545;
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            margin-top: 1rem;
-            transition: background 0.3s;
-        }
-
-        .delete-post-btn:hover {
-            background: #c82333;
-        }
-
-        .no-posts {
-            text-align: center;
-            padding: 4rem;
-            background: white;
-            border-radius: 15px;
-            color: #666;
-            font-size: 1.2rem;
-        }
-
-        .footer {
-            background: white;
-            text-align: center;
-            padding: 2rem;
-            margin-top: 3rem;
-            border-radius: 15px;
-            color: #666;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 2rem;
-            color: white;
-            font-size: 1.2rem;
-        }
-
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #28a745;
-            color: white;
-            padding: 1rem 2rem;
-            border-radius: 50px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            z-index: 3000;
-            animation: slideUp 0.3s;
-            display: none;
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translate(-50%, 20px);
-            }
-            to {
-                opacity: 1;
-                transform: translate(-50%, 0);
-            }
-        }
-
-        .toast.show {
-            display: block;
-        }
-
-        .toast.error {
-            background: #dc3545;
-        }
-
-        .drive-icon {
-            display: inline-block;
-            background: #0F9D58;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 0.7rem;
-            margin-right: 5px;
-        }
+        /* نفس التصميم السابق */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+        .header { background: white; padding: 1rem 2rem; border-radius: 15px; margin-bottom: 2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .header-top { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem; }
+        .logo h1 { color: #667eea; font-size: 1.8rem; display: flex; align-items: center; gap: 10px; }
+        .logo p { color: #666; font-size: 0.9rem; }
+        .admin-btn { background: #333; color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 50px; font-size: 1rem; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: transform 0.3s; }
+        .admin-btn:hover { transform: scale(1.05); background: #444; }
+        .search-section { background: #f0f2f5; padding: 1rem; border-radius: 15px; margin-top: 1rem; }
+        .search-box { position: relative; width: 100%; }
+        .search-box input { width: 100%; padding: 1rem 1rem 1rem 3.5rem; border: 2px solid #e0e0e0; border-radius: 50px; font-size: 1rem; transition: all 0.3s; background: white; }
+        .search-box input:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 3px rgba(102,126,234,0.1); }
+        .search-icon { position: absolute; right: 1.2rem; top: 50%; transform: translateY(-50%); color: #667eea; font-size: 1.2rem; }
+        .clear-search { position: absolute; left: 1.2rem; top: 50%; transform: translateY(-50%); background: none; border: none; color: #999; font-size: 1.2rem; cursor: pointer; display: none; }
+        .clear-search:hover { color: #dc3545; }
+        .search-stats { margin-top: 0.5rem; color: #666; font-size: 0.9rem; display: flex; justify-content: space-between; align-items: center; }
+        .result-count { background: #667eea; color: white; padding: 0.2rem 1rem; border-radius: 50px; font-size: 0.8rem; }
+        .posts-container { display: flex; flex-direction: column; gap: 2rem; margin-top: 2rem; }
+        .post-card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .post-header { padding: 1.5rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; display: flex; justify-content: space-between; align-items: center; }
+        .post-type { background: rgba(255,255,255,0.2); padding: 0.3rem 1rem; border-radius: 50px; font-size: 0.9rem; }
+        .post-date { font-size: 0.9rem; opacity: 0.9; }
+        .post-content { padding: 2rem; }
+        .post-title { font-size: 1.8rem; margin-bottom: 1rem; color: #333; }
+        .post-text { color: #555; line-height: 1.8; font-size: 1.1rem; margin-bottom: 1.5rem; }
+        .footer { background: white; text-align: center; padding: 2rem; margin-top: 3rem; border-radius: 15px; color: #666; }
+        .loading { text-align: center; padding: 2rem; color: white; font-size: 1.2rem; }
+        .no-posts { text-align: center; padding: 4rem; background: white; border-radius: 15px; color: #666; font-size: 1.2rem; }
+        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #28a745; color: white; padding: 1rem 2rem; border-radius: 50px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); z-index: 3000; animation: slideUp 0.3s; display: none; }
+        @keyframes slideUp { from { opacity: 0; transform: translate(-50%, 20px); } to { opacity: 1; transform: translate(-50%, 0); } }
+        .toast.show { display: block; }
+        .toast.error { background: #dc3545; }
     </style>
 </head>
 <body>
     <header class="header">
         <div class="header-top">
             <div class="logo">
-                <h1>
-                    📚 مجلة القسم
-                    <span id="notificationBadge" class="notification-badge" style="display: none;">جديد</span>
-                </h1>
+                <h1>📚 مجلة القسم</h1>
                 <p>التعاميم والمقالات الرسمية</p>
             </div>
             <button class="admin-btn" onclick="showAdminLogin()">
@@ -574,12 +58,7 @@
         <div class="search-section">
             <div class="search-box">
                 <span class="search-icon">🔍</span>
-                <input 
-                    type="text" 
-                    id="searchInput" 
-                    placeholder="ابحث في عناوين التعاميم... (مثلاً: رمضان، دوام، إجازة)"
-                    oninput="handleSearch()"
-                >
+                <input type="text" id="searchInput" placeholder="ابحث في عناوين التعاميم..." oninput="handleSearch()">
                 <button class="clear-search" id="clearSearchBtn" onclick="clearSearch()">✕</button>
             </div>
             <div class="search-stats">
@@ -590,61 +69,44 @@
     </header>
 
     <!-- شاشة تسجيل الدخول -->
-    <div id="adminLoginScreen" class="admin-login-screen">
-        <div class="admin-login-box">
+    <div id="adminLoginScreen" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.8); justify-content:center; align-items:center; z-index:2000;">
+        <div style="background:white; padding:2rem; border-radius:15px; width:90%; max-width:400px; text-align:center;">
             <h2>🔐 دخول المشرفين</h2>
-            <p>الرجاء إدخال رمز الإدارة</p>
-            <input type="password" id="adminPassword" placeholder="أدخل الرمز">
-            <div class="admin-login-buttons">
-                <button class="login-submit" onclick="checkAdminPassword()">دخول</button>
-                <button class="login-cancel" onclick="hideAdminLogin()">إلغاء</button>
+            <input type="password" id="adminPassword" placeholder="أدخل الرمز" style="width:100%; padding:1rem; margin:1rem 0; border:2px solid #e0e0e0; border-radius:8px;">
+            <div>
+                <button onclick="checkAdminPassword()" style="background:#667eea; color:white; border:none; padding:0.8rem 1.5rem; border-radius:8px; cursor:pointer; margin:0.5rem;">دخول</button>
+                <button onclick="hideAdminLogin()" style="background:#dc3545; color:white; border:none; padding:0.8rem 1.5rem; border-radius:8px; cursor:pointer;">إلغاء</button>
             </div>
-            <div id="loginError" class="login-error">الرمز غير صحيح</div>
+            <div id="loginError" style="color:#dc3545; margin-top:1rem; display:none;">الرمز غير صحيح</div>
         </div>
     </div>
 
     <!-- لوحة الإدارة -->
-    <div id="adminPanel" class="admin-panel">
-        <div class="admin-header">
-            <h3>⚙️ لوحة الإدارة</h3>
-            <button class="logout-btn" onclick="logout()">تسجيل الخروج</button>
+    <div id="adminPanel" style="background:white; padding:2rem; border-radius:15px; margin-bottom:2rem; display:none; box-shadow:0 4px 15px rgba(0,0,0,0.1);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+            <h3 style="color:#667eea;">⚙️ لوحة الإدارة</h3>
+            <button onclick="logout()" style="background:#dc3545; color:white; border:none; padding:0.5rem 1rem; border-radius:5px; cursor:pointer;">تسجيل الخروج</button>
         </div>
-        
-        <div class="add-post-form">
-            <h4 style="margin-bottom: 1rem;">إضافة تعميم جديد</h4>
-            
-            <div class="form-group">
-                <label>نوع المنشور</label>
-                <select id="postType">
+        <div class="add-post-form" style="background:#f9f9f9; padding:1.5rem; border-radius:10px;">
+            <h4 style="margin-bottom:1rem;">إضافة تعميم جديد</h4>
+            <div style="margin-bottom:1rem;">
+                <label style="display:block; margin-bottom:0.5rem; color:#333; font-weight:600;">نوع المنشور</label>
+                <select id="postType" style="width:100%; padding:1rem; border:2px solid #e0e0e0; border-radius:8px;">
                     <option value="تعميم">📢 تعميم</option>
                     <option value="مقال">📝 مقال</option>
                     <option value="إعلان">📌 إعلان</option>
                     <option value="خبر">📰 خبر</option>
                 </select>
             </div>
-
-            <div class="form-group">
-                <label>عنوان المنشور</label>
-                <input type="text" id="postTitle" placeholder="أدخل عنوان المنشور">
+            <div style="margin-bottom:1rem;">
+                <label style="display:block; margin-bottom:0.5rem; color:#333; font-weight:600;">عنوان المنشور</label>
+                <input type="text" id="postTitle" placeholder="أدخل عنوان المنشور" style="width:100%; padding:1rem; border:2px solid #e0e0e0; border-radius:8px;">
             </div>
-
-            <div class="form-group">
-                <label>محتوى المنشور</label>
-                <textarea id="postText" placeholder="أدخل محتوى المنشور"></textarea>
+            <div style="margin-bottom:1rem;">
+                <label style="display:block; margin-bottom:0.5rem; color:#333; font-weight:600;">محتوى المنشور</label>
+                <textarea id="postText" placeholder="أدخل محتوى المنشور" style="width:100%; padding:1rem; border:2px solid #e0e0e0; border-radius:8px; height:120px;"></textarea>
             </div>
-
-            <div class="form-group">
-                <label>الصور (رابط Google Drive أو رابط عادي)</label>
-                <div id="imagesContainer">
-                    <div class="image-input-group">
-                        <input type="url" class="image-url" placeholder="رابط الصورة">
-                        <button type="button" class="remove-image-btn" onclick="removeImageInput(this)">✕</button>
-                    </div>
-                </div>
-                <button type="button" class="add-image-btn" onclick="addImageInput()">+ إضافة صورة أخرى</button>
-            </div>
-
-            <button class="submit-btn" onclick="addPost()">📢 نشر التعميم</button>
+            <button onclick="addPost()" style="background:#28a745; color:white; border:none; padding:1rem; border-radius:8px; font-size:1.1rem; cursor:pointer; width:100%; margin-top:1rem;">📢 نشر التعميم</button>
         </div>
     </div>
 
@@ -655,74 +117,167 @@
     </main>
 
     <footer class="footer">
-        <p>جميع الحقوق محفوظة &copy; 2024 - مجلة القسم</p>
+        <p>جميع الحقوق محفوظة © 2024 - مجلة القسم</p>
     </footer>
 
     <div id="toast" class="toast"></div>
 
     <script>
-        // ===========================================
-        // 🔥 رابط السكريبت
-        // ===========================================
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbykDvt8HEjz0Y_WzIzpZyYWzZjU_Y7EtUdUu6QEqxtn1wI6iwu_5qhgFCedjHLF2ahNpg/exec';
-        
         const ADMIN_PASSWORD = "admin";
         let isAdminLoggedIn = false;
-        let lastPostId = 0;
-        let lastPostCount = 0;
-        let allPosts = []; // مصفوفة لتخزين جميع التعاميم
+        let allPosts = [];
 
-        // ===========================================
-        // دوال البحث
-        // ===========================================
-        function handleSearch() {
-            const searchTerm = document.getElementById('searchInput').value.trim();
-            const clearBtn = document.getElementById('clearSearchBtn');
-            
-            // إظهار أو إخفاء زر المسح
-            if (searchTerm.length > 0) {
-                clearBtn.style.display = 'block';
+        function showAdminLogin() {
+            document.getElementById('adminLoginScreen').style.display = 'flex';
+        }
+
+        function hideAdminLogin() {
+            document.getElementById('adminLoginScreen').style.display = 'none';
+        }
+
+        function checkAdminPassword() {
+            const password = document.getElementById('adminPassword').value;
+            if (password === ADMIN_PASSWORD) {
+                isAdminLoggedIn = true;
+                document.getElementById('adminPanel').style.display = 'block';
+                hideAdminLogin();
+                loadPosts();
             } else {
-                clearBtn.style.display = 'none';
+                document.getElementById('loginError').style.display = 'block';
             }
-            
-            // تطبيق البحث
+        }
+
+        function logout() {
+            isAdminLoggedIn = false;
+            document.getElementById('adminPanel').style.display = 'none';
+            loadPosts();
+        }
+
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.style.background = isError ? '#dc3545' : '#28a745';
+            toast.classList.add('show');
+            setTimeout(() => { toast.classList.remove('show'); }, 3000);
+        }
+
+        async function loadPosts() {
+            const container = document.getElementById('postsContainer');
+            try {
+                const response = await fetch(`${SCRIPT_URL}?action=get`);
+                const data = await response.json();
+                if (data.success) {
+                    allPosts = data.posts;
+                    document.getElementById('searchCount').textContent = allPosts.length;
+                    filterPosts(document.getElementById('searchInput').value);
+                } else {
+                    container.innerHTML = '<div class="no-posts">خطأ في تحميل البيانات</div>';
+                }
+            } catch (error) {
+                container.innerHTML = '<div class="no-posts">حدث خطأ في الاتصال</div>';
+            }
+        }
+
+        function filterPosts(searchTerm) {
+            const container = document.getElementById('postsContainer');
+            if (!allPosts.length) {
+                container.innerHTML = '<div class="no-posts">لا توجد تعاميم بعد</div>';
+                return;
+            }
+
+            let filteredPosts = allPosts;
+            if (searchTerm) {
+                filteredPosts = allPosts.filter(post => 
+                    post.title.toLowerCase().includes(searchTerm.toLowerCase())
+                );
+            }
+
+            if (filteredPosts.length === 0) {
+                container.innerHTML = `<div class="no-posts">لا توجد نتائج لـ "${searchTerm}"</div>`;
+                return;
+            }
+
+            const sortedPosts = filteredPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
+            let html = '';
+            sortedPosts.forEach(post => {
+                const date = new Date(post.date).toLocaleString('ar-EG', {
+                    year: 'numeric', month: 'long', day: 'numeric',
+                    hour: '2-digit', minute: '2-digit'
+                });
+                html += `
+                    <div class="post-card">
+                        <div class="post-header">
+                            <span class="post-type">${post.type}</span>
+                            <span class="post-date">${date}</span>
+                        </div>
+                        <div class="post-content">
+                            <h2 class="post-title">${post.title}</h2>
+                            <div class="post-text">${post.text.replace(/\n/g, '<br>')}</div>
+                            ${isAdminLoggedIn ? `
+                                <button class="delete-post-btn" onclick="deletePost(${post.id})" style="background:#dc3545; color:white; border:none; padding:0.5rem 1rem; border-radius:5px; cursor:pointer; margin-top:1rem;">
+                                    🗑️ حذف التعميم
+                                </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function handleSearch() {
+            const searchTerm = document.getElementById('searchInput').value;
+            document.getElementById('clearSearchBtn').style.display = searchTerm ? 'block' : 'none';
             filterPosts(searchTerm);
         }
 
         function clearSearch() {
             document.getElementById('searchInput').value = '';
             document.getElementById('clearSearchBtn').style.display = 'none';
-            filterPosts(''); // عرض جميع التعاميم
-            document.getElementById('searchInput').focus();
+            filterPosts('');
         }
 
-        function filterPosts(searchTerm) {
-            const container = document.getElementById('postsContainer');
+        async function addPost() {
+            if (!isAdminLoggedIn) { showToast('❌ يجب تسجيل الدخول أولاً', true); return; }
+            const type = document.getElementById('postType').value;
+            const title = document.getElementById('postTitle').value;
+            const text = document.getElementById('postText').value;
+            if (!title || !text) { showToast('❌ الرجاء كتابة العنوان والمحتوى', true); return; }
             
-            if (!allPosts || allPosts.length === 0) {
-                container.innerHTML = '<div class="no-posts">لا توجد تعاميم بعد</div>';
-                document.getElementById('searchResultText').textContent = 'لا توجد تعاميم';
-                document.getElementById('searchCount').textContent = '0';
-                return;
+            try {
+                const url = `${SCRIPT_URL}?action=add&type=${encodeURIComponent(type)}&title=${encodeURIComponent(title)}&text=${encodeURIComponent(text)}`;
+                const response = await fetch(url);
+                const data = await response.json();
+                if (data.success) {
+                    showToast('✅ تم النشر بنجاح');
+                    document.getElementById('postTitle').value = '';
+                    document.getElementById('postText').value = '';
+                    await loadPosts();
+                }
+            } catch (error) {
+                showToast('❌ فشل النشر', true);
             }
+        }
 
-            // إذا كان البحث فارغ، عرض الكل
-            if (!searchTerm) {
-                displayFilteredPosts(allPosts);
-                document.getElementById('searchResultText').textContent = 'جميع التعاميم';
-                document.getElementById('searchCount').textContent = allPosts.length;
-                return;
-            }
-
-            // تنظيف نص البحث (إزالة التشكيل، جعله صغيراً)
-            const cleanSearchTerm = searchTerm.toLowerCase().trim();
+        async function deletePost(id) {
+            if (!isAdminLoggedIn) { showToast('❌ يجب تسجيل الدخول أولاً', true); return; }
+            if (!confirm('هل أنت متأكد؟')) return;
             
-            // فلترة التعاميم - بحث في العنوان فقط
-            const filteredPosts = allPosts.filter(post => {
-                const title = post.title.toLowerCase();
-                // البحث عن أي جزء من الكلمة
-                return title.includes(cleanSearchTerm);
-            });
+            try {
+                const response = await fetch(`${SCRIPT_URL}?action=delete&id=${id}`);
+                const data = await response.json();
+                if (data.success) {
+                    showToast('✅ تم الحذف بنجاح');
+                    await loadPosts();
+                }
+            } catch (error) {
+                showToast('❌ فشل الحذف', true);
+            }
+        }
 
-         
+        loadPosts();
+        setInterval(loadPosts, 30000);
+    </script>
+</body>
+</html>
