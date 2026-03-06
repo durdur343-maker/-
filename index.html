@@ -2,135 +2,127 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>📚 مجلة القسم - النظام الذكي</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>📸 مجلة القسم - كاميرا محسنة</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+        body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 10px; }
         
-        .header { background: white; padding: 1rem 2rem; border-radius: 15px; margin-bottom: 2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .header-top { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem; }
-        .logo h1 { color: #667eea; font-size: 1.8rem; }
-        .logo p { color: #666; font-size: 0.9rem; }
+        .header { background: white; padding: 1rem; border-radius: 15px; margin-bottom: 1rem; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .header-top { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+        .logo h1 { color: #667eea; font-size: 1.5rem; }
+        .logo p { color: #666; font-size: 0.8rem; }
         
-        .admin-btn { background: #333; color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 50px; font-size: 1rem; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: transform 0.3s; }
-        .admin-btn:hover { transform: scale(1.05); background: #444; }
+        .admin-btn { background: #333; color: white; border: none; padding: 0.5rem 1rem; border-radius: 50px; font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; gap: 0.3rem; }
         
-        .search-section { background: #f0f2f5; padding: 1rem; border-radius: 15px; margin-top: 1rem; }
-        .search-box { position: relative; width: 100%; }
-        .search-box input { width: 100%; padding: 1rem 1rem 1rem 3.5rem; border: 2px solid #e0e0e0; border-radius: 50px; font-size: 1rem; }
-        .search-box input:focus { outline: none; border-color: #667eea; }
-        .search-icon { position: absolute; right: 1.2rem; top: 50%; transform: translateY(-50%); color: #667eea; font-size: 1.2rem; }
-        .clear-search { position: absolute; left: 1.2rem; top: 50%; transform: translateY(-50%); background: none; border: none; color: #999; cursor: pointer; display: none; }
+        .search-section { background: #f0f2f5; padding: 0.8rem; border-radius: 15px; margin-top: 0.5rem; }
+        .search-box { position: relative; }
+        .search-box input { width: 100%; padding: 0.8rem 0.8rem 0.8rem 2.5rem; border: 2px solid #e0e0e0; border-radius: 50px; font-size: 0.9rem; }
+        .search-icon { position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); color: #667eea; }
         
-        .search-stats { margin-top: 0.5rem; color: #666; display: flex; justify-content: space-between; }
-        .result-count { background: #667eea; color: white; padding: 0.2rem 1rem; border-radius: 50px; font-size: 0.8rem; }
-        
-        .admin-login-screen { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 2000; }
-        .admin-login-box { background: white; padding: 2rem; border-radius: 15px; width: 90%; max-width: 400px; text-align: center; animation: fadeIn 0.3s; }
-        @keyframes fadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
-        .admin-login-box h2 { color: #333; margin-bottom: 1rem; }
-        .admin-login-box input { width: 100%; padding: 1rem; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1rem; margin: 1rem 0; }
-        .admin-login-buttons { display: flex; gap: 1rem; }
+        .admin-login-screen { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.9); justify-content: center; align-items: center; z-index: 2000; }
+        .admin-login-box { background: white; padding: 1.5rem; border-radius: 15px; width: 90%; max-width: 400px; text-align: center; }
+        .admin-login-box h2 { color: #333; margin-bottom: 1rem; font-size: 1.3rem; }
+        .admin-login-box input { width: 100%; padding: 0.8rem; margin: 0.5rem 0; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1rem; }
+        .admin-login-buttons { display: flex; gap: 0.5rem; }
         .admin-login-buttons button { flex: 1; padding: 0.8rem; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; }
         .login-submit { background: #667eea; color: white; }
         .login-cancel { background: #dc3545; color: white; }
-        .login-error { color: #dc3545; margin-top: 1rem; display: none; }
+        .login-error { color: #dc3545; margin-top: 0.5rem; display: none; }
         
-        .admin-panel { background: white; padding: 2rem; border-radius: 15px; margin-bottom: 2rem; display: none; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
-        .admin-header h3 { color: #667eea; font-size: 1.5rem; }
-        .logout-btn { background: #dc3545; color: white; border: none; padding: 0.5rem 1rem; border-radius: 5px; cursor: pointer; }
+        .admin-panel { background: white; padding: 1.5rem; border-radius: 15px; margin-bottom: 1rem; display: none; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .admin-header h3 { color: #667eea; font-size: 1.3rem; }
+        .logout-btn { background: #dc3545; color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 5px; cursor: pointer; font-size: 0.9rem; }
         
-        .add-post-form { background: #f9f9f9; padding: 1.5rem; border-radius: 10px; }
-        .form-group { margin-bottom: 1.5rem; }
-        .form-group label { display: block; margin-bottom: 0.5rem; color: #333; font-weight: 600; font-size: 1.1rem; }
-        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 1rem; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1rem; transition: border-color 0.3s; }
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #667eea; }
-        .form-group textarea { height: 120px; resize: vertical; }
+        .add-post-form { background: #f9f9f9; padding: 1rem; border-radius: 10px; }
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; margin-bottom: 0.3rem; color: #333; font-weight: 600; font-size: 1rem; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 0.8rem; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 0.9rem; }
+        .form-group textarea { height: 100px; resize: vertical; }
         
-        .image-input-group { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; align-items: center; }
-        .image-input-group input { flex: 1; padding: 0.8rem; }
-        .preview-btn { background: #667eea; color: white; border: none; padding: 0.5rem 1rem; border-radius: 5px; cursor: pointer; }
-        .remove-btn { background: #dc3545; color: white; border: none; padding: 0.5rem 1rem; border-radius: 5px; cursor: pointer; }
-        .add-image-btn { background: #667eea; color: white; border: none; padding: 0.5rem 1rem; border-radius: 5px; cursor: pointer; margin-top: 0.5rem; }
+        .image-row { display: flex; gap: 0.3rem; margin-bottom: 0.5rem; align-items: center; flex-wrap: wrap; }
+        .image-row input { flex: 1; min-width: 150px; font-size: 0.8rem; padding: 0.6rem; }
+        .image-row button { padding: 0.5rem; border: none; border-radius: 5px; cursor: pointer; color: white; font-size: 0.8rem; min-width: 40px; }
+        .preview-btn { background: #667eea; }
+        .camera-btn { background: #28a745; }
+        .remove-btn { background: #dc3545; }
+        .add-image-btn { background: #667eea; color: white; border: none; padding: 0.5rem; border-radius: 5px; cursor: pointer; margin-top: 0.3rem; width: 100%; font-size: 0.9rem; }
         
-        .preview-area { display: flex; gap: 1rem; flex-wrap: wrap; margin: 1rem 0; padding: 1rem; background: white; border-radius: 8px; min-height: 100px; }
-        .preview-placeholder { color: #999; width: 100%; text-align: center; }
-        .preview-image { position: relative; width: 100px; height: 100px; }
+        .preview-area { display: flex; gap: 0.5rem; flex-wrap: wrap; margin: 0.5rem 0; padding: 0.5rem; background: white; border-radius: 8px; min-height: 80px; }
+        .preview-placeholder { color: #999; width: 100%; text-align: center; font-size: 0.9rem; }
+        .preview-image { width: 70px; height: 70px; position: relative; }
         .preview-image img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; border: 2px solid #667eea; }
-        .preview-check { position: absolute; top: -5px; right: -5px; background: #28a745; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 12px; }
         
-        .submit-btn { background: #28a745; color: white; border: none; padding: 1rem; border-radius: 8px; font-size: 1.1rem; cursor: pointer; width: 100%; margin-top: 1rem; transition: transform 0.3s; }
-        .submit-btn:hover { transform: scale(1.02); }
+        .submit-btn { background: #28a745; color: white; border: none; padding: 0.8rem; border-radius: 8px; font-size: 1rem; cursor: pointer; width: 100%; margin-top: 0.5rem; }
         
-        .container { max-width: 1200px; margin: 2rem auto; }
-        .posts-container { display: flex; flex-direction: column; gap: 2rem; }
+        /* كاميرا محسنة للهاتف */
+        .camera-modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: black; z-index: 3000; flex-direction: column; justify-content: center; align-items: center; padding: 10px; }
+        .camera-modal.active { display: flex; }
         
-        .post-card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); animation: slideIn 0.5s ease-out; }
-        @keyframes slideIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .camera-container { width: 100%; max-width: 500px; position: relative; margin: auto; }
+        #cameraVideo { width: 100%; border-radius: 20px; background: #222; aspect-ratio: 4/3; object-fit: cover; }
         
-        .post-header { padding: 1.5rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; display: flex; justify-content: space-between; align-items: center; }
-        .post-type { background: rgba(255,255,255,0.2); padding: 0.3rem 1rem; border-radius: 50px; font-size: 0.9rem; }
-        .post-date { font-size: 0.9rem; opacity: 0.9; }
+        /* أزرار في الأعلى بعيدة عن شريط التنقل */
+        .camera-top-buttons { position: absolute; top: 10px; left: 10px; right: 10px; display: flex; justify-content: space-between; z-index: 10; }
+        .camera-close-btn { width: 50px; height: 50px; border-radius: 50%; background: rgba(220,53,69,0.9); color: white; border: none; font-size: 24px; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
         
-        .post-content { padding: 2rem; }
-        .post-title { font-size: 1.8rem; margin-bottom: 1rem; color: #333; }
-        .post-text { color: #555; line-height: 1.8; font-size: 1.1rem; margin-bottom: 1.5rem; }
+        /* زر الالتقاط كبير وفي الوسط وبعيد عن الأسفل */
+        .capture-btn-container { position: absolute; bottom: 30px; left: 0; right: 0; display: flex; justify-content: center; z-index: 10; }
+        .capture-btn { width: 70px; height: 70px; border-radius: 50%; background: white; border: 4px solid #28a745; display: flex; align-items: center; justify-content: center; font-size: 30px; color: #28a745; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
         
-        .post-images { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
-        .post-image { width: 100%; height: 200px; object-fit: cover; border-radius: 10px; cursor: pointer; transition: transform 0.3s; border: 2px solid #667eea; }
-        .post-image:hover { transform: scale(1.05); border-color: #ffa502; }
+        .posts-container { display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem; }
+        .post-card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .post-header { padding: 1rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; display: flex; justify-content: space-between; align-items: center; }
+        .post-type { background: rgba(255,255,255,0.2); padding: 0.2rem 0.8rem; border-radius: 50px; font-size: 0.8rem; }
+        .post-date { font-size: 0.8rem; opacity: 0.9; }
         
-        .delete-post-btn { background: #dc3545; color: white; border: none; padding: 0.5rem 1rem; border-radius: 5px; cursor: pointer; margin-top: 1rem; }
+        .post-content { padding: 1rem; }
+        .post-title { font-size: 1.3rem; margin-bottom: 0.5rem; color: #333; }
+        .post-text { color: #555; line-height: 1.5; font-size: 0.9rem; margin-bottom: 1rem; }
         
-        .footer { background: white; text-align: center; padding: 2rem; margin-top: 3rem; border-radius: 15px; color: #666; }
-        .loading { text-align: center; padding: 2rem; color: white; font-size: 1.2rem; }
-        .no-posts { text-align: center; padding: 4rem; background: white; border-radius: 15px; color: #666; font-size: 1.2rem; }
+        .post-images { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.5rem; margin: 0.5rem 0; }
+        .post-image { width: 100%; height: 150px; object-fit: cover; border-radius: 10px; cursor: pointer; border: 2px solid #667eea; }
         
-        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #28a745; color: white; padding: 1rem 2rem; border-radius: 50px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); z-index: 3000; animation: slideUp 0.3s; display: none; }
+        .post-actions { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
+        .edit-post-btn { background: #ffc107; color: #333; border: none; padding: 0.4rem 0.8rem; border-radius: 5px; cursor: pointer; font-size: 0.8rem; flex: 1; }
+        .delete-post-btn { background: #dc3545; color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 5px; cursor: pointer; font-size: 0.8rem; flex: 1; }
+        
+        .footer { background: white; text-align: center; padding: 1rem; margin-top: 1.5rem; border-radius: 15px; color: #666; font-size: 0.9rem; }
+        .loading { text-align: center; padding: 2rem; color: white; font-size: 1rem; }
+        .no-posts { text-align: center; padding: 2rem; background: white; border-radius: 15px; color: #666; font-size: 1rem; }
+        
+        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #28a745; color: white; padding: 0.8rem 1.5rem; border-radius: 50px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); z-index: 4000; animation: slideUp 0.3s; display: none; font-size: 0.9rem; }
         @keyframes slideUp { from { opacity: 0; transform: translate(-50%, 20px); } to { opacity: 1; transform: translate(-50%, 0); } }
         .toast.show { display: block; }
         .toast.error { background: #dc3545; }
-        
-        .info-box { background: #e8f0fe; padding: 10px; border-radius: 8px; margin-bottom: 10px; color: #333; font-size: 0.9rem; }
-        .info-box p { margin: 5px 0; }
     </style>
 </head>
 <body>
     <header class="header">
         <div class="header-top">
             <div class="logo">
-                <h1>📚 مجلة القسم</h1>
+                <h1>📸 مجلة القسم</h1>
                 <p>التعاميم والمقالات الرسمية</p>
             </div>
-            <button class="admin-btn" onclick="showAdminLogin()">
-                <span>⚙️</span> الإدارة
-            </button>
+            <button class="admin-btn" onclick="showLogin()">⚙️ الإدارة</button>
         </div>
-
-        <!-- البحث -->
         <div class="search-section">
             <div class="search-box">
                 <span class="search-icon">🔍</span>
-                <input type="text" id="searchInput" placeholder="ابحث في عناوين التعاميم..." oninput="handleSearch()">
-                <button class="clear-search" id="clearSearchBtn" onclick="clearSearch()">✕</button>
-            </div>
-            <div class="search-stats">
-                <span id="searchResultText">جميع التعاميم</span>
-                <span id="searchCount" class="result-count">0</span>
+                <input type="text" id="searchInput" placeholder="ابحث في العناوين..." oninput="searchPosts()">
             </div>
         </div>
     </header>
 
-    <!-- شاشة تسجيل الدخول -->
-    <div class="admin-login-screen" id="adminLoginScreen">
+    <!-- تسجيل الدخول -->
+    <div class="admin-login-screen" id="loginScreen">
         <div class="admin-login-box">
             <h2>🔐 دخول المشرفين</h2>
-            <input type="password" id="adminPassword" placeholder="أدخل الرمز">
+            <input type="password" id="adminPass" placeholder="أدخل الرمز">
             <div class="admin-login-buttons">
-                <button class="login-submit" onclick="checkAdminPassword()">دخول</button>
-                <button class="login-cancel" onclick="hideAdminLogin()">إلغاء</button>
+                <button class="login-submit" onclick="checkPass()">دخول</button>
+                <button class="login-cancel" onclick="hideLogin()">إلغاء</button>
             </div>
             <div class="login-error" id="loginError">الرمز غير صحيح</div>
         </div>
@@ -144,12 +136,7 @@
         </div>
         
         <div class="add-post-form">
-            <h4 style="margin-bottom: 1rem;">إضافة تعميم جديد</h4>
-            
-            <div class="info-box">
-                <p>✨ نظام ذكي: الصق رابط Drive مباشرة (طويل أو قصير) وسيتم تحويله تلقائياً</p>
-                <p>📌 مثال: https://drive.google.com/file/d/1jOqjWl25FESHs53KTSTZa1xpT1oe26Mh/view</p>
-            </div>
+            <h4 style="margin-bottom: 0.5rem;">إضافة تعميم جديد</h4>
             
             <div class="form-group">
                 <label>نوع المنشور</label>
@@ -157,7 +144,6 @@
                     <option value="تعميم">📢 تعميم</option>
                     <option value="مقال">📝 مقال</option>
                     <option value="إعلان">📌 إعلان</option>
-                    <option value="خبر">📰 خبر</option>
                 </select>
             </div>
 
@@ -171,25 +157,77 @@
                 <textarea id="postText" placeholder="أدخل محتوى المنشور"></textarea>
             </div>
 
-            <!-- قسم الصور الذكي -->
+            <!-- الصور مع كاميرا -->
             <div class="form-group">
-                <label>📸 صور Google Drive</label>
+                <label>📸 الصور</label>
                 <div id="imagesContainer">
-                    <div class="image-input-group">
-                        <input type="text" class="image-id" placeholder="الصق رابط Drive أو ID الصورة">
-                        <button class="preview-btn" onclick="previewImage(this)">🔍 معاينة</button>
-                        <button class="remove-btn" onclick="removeImageInput(this)">✕</button>
+                    <div class="image-row">
+                        <input type="text" class="imageUrl" placeholder="رابط الصورة أو ID">
+                        <button class="preview-btn" onclick="previewImage(this)">🔍</button>
+                        <button class="camera-btn" onclick="openCamera(this)">📷</button>
+                        <button class="remove-btn" onclick="removeImageRow(this)">✕</button>
                     </div>
                 </div>
-                <button class="add-image-btn" onclick="addImageInput()">+ إضافة صورة أخرى</button>
+                <button class="add-image-btn" onclick="addImageRow()">+ إضافة صورة</button>
             </div>
 
-            <!-- منطقة المعاينة -->
+            <!-- المعاينة -->
             <div class="preview-area" id="previewArea">
-                <p class="preview-placeholder">ستظهر معاينة الصور هنا</p>
+                <p class="preview-placeholder">معاينة الصور</p>
             </div>
 
             <button class="submit-btn" onclick="addPost()">📢 نشر التعميم</button>
+        </div>
+    </div>
+
+    <!-- كاميرا محسنة للهاتف -->
+    <div class="camera-modal" id="cameraModal">
+        <div class="camera-container">
+            <video id="cameraVideo" autoplay playsinline></video>
+            
+            <!-- أزرار في الأعلى بعيدة عن شريط التنقل -->
+            <div class="camera-top-buttons">
+                <button class="camera-close-btn" onclick="closeCamera()">✕</button>
+                <div style="width:50px;"></div> <!-- عنصر فارغ للتوازن -->
+            </div>
+            
+            <!-- زر الالتقاط كبير وفي الوسط وبعيد عن الأسفل -->
+            <div class="capture-btn-container">
+                <button class="capture-btn" onclick="takePhoto()">📸</button>
+            </div>
+        </div>
+        <canvas id="photoCanvas" style="display:none;"></canvas>
+    </div>
+
+    <!-- نافذة التعديل -->
+    <div class="admin-login-screen" id="editModal" style="z-index:3500;">
+        <div class="admin-login-box" style="max-width:500px;">
+            <h2>✏️ تعديل التعميم</h2>
+            <input type="hidden" id="editPostId">
+            
+            <div class="form-group">
+                <label>نوع المنشور</label>
+                <select id="editPostType">
+                    <option value="تعميم">📢 تعميم</option>
+                    <option value="مقال">📝 مقال</option>
+                    <option value="إعلان">📌 إعلان</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>عنوان المنشور</label>
+                <input type="text" id="editPostTitle" placeholder="العنوان">
+            </div>
+
+            <div class="form-group">
+                <label>محتوى المنشور</label>
+                <textarea id="editPostText" placeholder="المحتوى" rows="3"></textarea>
+            </div>
+
+            <div class="admin-login-buttons">
+                <button class="login-submit" onclick="saveEdit()">💾 حفظ</button>
+                <button class="login-cancel" onclick="closeEdit()">✕ إلغاء</button>
+            </div>
         </div>
     </div>
 
@@ -200,142 +238,47 @@
     </main>
 
     <footer class="footer">
-        <p>جميع الحقوق محفوظة © 2026 - مجلة القسم</p>
+        <p>جميع الحقوق محفوظة © 2024 - مجلة القسم</p>
     </footer>
 
     <div id="toast" class="toast"></div>
 
     <script>
-        // ===== الإعدادات الأساسية =====
+        // ===== رابط السكريبت الخاص بك =====
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbykDvt8HEjz0Y_WzIzpZyYWzZjU_Y7EtUdUu6QEqxtn1wI6iwu_5qhgFCedjHLF2ahNpg/exec';
-        const ADMIN_PASSWORD = "admin";
-        let isAdminLoggedIn = false;
+        const ADMIN_PASS = "admin";
+        const IMGBB_KEY = '7b9c1b8f8f5e8f1f1a2b3c4d5e6f7g8h';
+        
+        let isAdmin = false;
         let allPosts = [];
+        let currentInput = null;
+        let cameraStream = null;
 
-        // ===== دوال الصور الذكية =====
-        function addImageInput() {
-            const container = document.getElementById('imagesContainer');
-            const div = document.createElement('div');
-            div.className = 'image-input-group';
-            div.innerHTML = `
-                <input type="text" class="image-id" placeholder="الصق رابط Drive أو ID الصورة">
-                <button class="preview-btn" onclick="previewImage(this)">🔍 معاينة</button>
-                <button class="remove-btn" onclick="removeImageInput(this)">✕</button>
-            `;
-            container.appendChild(div);
-        }
-
-        function previewImage(btn) {
-            const input = btn.parentElement.querySelector('.image-id');
-            const rawInput = input.value.trim();
-            if (!rawInput) {
-                showToast('❌ أدخل رابط أو ID الصورة أولاً', true);
-                return;
-            }
-            
-            // استخراج ID ذكياً
-            const extractedId = extractDriveId(rawInput);
-            if (!extractedId) {
-                showToast('❌ لم نتمكن من استخراج ID صحيح', true);
-                return;
-            }
-            
-            const previewArea = document.getElementById('previewArea');
-            const imageUrl = `https://drive.google.com/uc?export=view&id=${extractedId}`;
-            
-            // إزالة النص الافتراضي
-            if (previewArea.children.length === 1 && previewArea.children[0].classList.contains('preview-placeholder')) {
-                previewArea.innerHTML = '';
-            }
-            
-            // إضافة الصورة للمعاينة
-            const imgDiv = document.createElement('div');
-            imgDiv.className = 'preview-image';
-            imgDiv.innerHTML = `
-                <img src="${imageUrl}" onerror="this.parentElement.remove(); showToast('❌ ID غير صحيح', true)">
-                <span class="preview-check">✓</span>
-            `;
-            previewArea.appendChild(imgDiv);
-            showToast('✅ تمت المعاينة');
-        }
-
-        function removeImageInput(btn) {
-            if (document.querySelectorAll('.image-id').length > 1) {
-                btn.parentElement.remove();
-                updatePreview();
-            }
-        }
-
-        function updatePreview() {
-            const previewArea = document.getElementById('previewArea');
-            previewArea.innerHTML = '<p class="preview-placeholder">ستظهر معاينة الصور هنا</p>';
-        }
-
-        // دالة ذكية لاستخراج ID من أي صيغة رابط Drive
-        function extractDriveId(input) {
-            input = input.trim();
-            
-            // 1. إذا كان المدخل هو ID فقط (مجرد أحرف وأرقام بطول مناسب)
-            if (input.match(/^[a-zA-Z0-9_-]{25,}$/)) {
-                return input; // يعتبره ID مباشرة
-            }
-            
-            let fileId = null;
-            
-            // 2. استخراج من الرابط الطويل /d/...
-            if (input.includes('/d/')) {
-                fileId = input.split('/d/')[1].split('/')[0];
-            }
-            // 3. استخراج من ?id=...
-            else if (input.includes('id=')) {
-                fileId = input.split('id=')[1].split('&')[0];
-            }
-            // 4. استخراج من /open?id=...
-            else if (input.includes('open?')) {
-                fileId = input.split('id=')[1].split('&')[0];
-            }
-            // 5. استخراج من uc?export=view&id=...
-            else if (input.includes('uc?export=view&id=')) {
-                fileId = input.split('uc?export=view&id=')[1].split('&')[0];
-            }
-
-            if (fileId) {
-                // تنظيف الـ ID من أية أجزاء إضافية
-                fileId = fileId.split('?')[0].split('#')[0];
-                return fileId;
-            }
-            
-            return null; // لم يتم التعرف على صيغة
-        }
-
-        // ===== دوال العرض =====
-        function showToast(message, isError = false) {
-            const toast = document.getElementById('toast');
-            toast.textContent = message;
-            toast.style.background = isError ? '#dc3545' : '#28a745';
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 3000);
-        }
-
+        // ===== تحميل البيانات من السكريبت =====
         async function loadPosts() {
+            const container = document.getElementById('postsContainer');
+            container.innerHTML = '<div class="loading">جاري تحميل التعاميم...</div>';
+            
             try {
                 const response = await fetch(`${SCRIPT_URL}?action=get`);
                 const data = await response.json();
+                
                 if (data.success) {
                     allPosts = data.posts;
-                    document.getElementById('searchCount').textContent = allPosts.length;
-                    filterPosts(document.getElementById('searchInput').value);
+                    displayPosts(allPosts);
+                } else {
+                    container.innerHTML = '<div class="no-posts">خطأ في تحميل البيانات</div>';
                 }
             } catch (error) {
-                document.getElementById('postsContainer').innerHTML = '<div class="no-posts">حدث خطأ في الاتصال</div>';
+                container.innerHTML = '<div class="no-posts">حدث خطأ في الاتصال</div>';
             }
         }
 
         function displayPosts(posts) {
             const container = document.getElementById('postsContainer');
             
-            if (!posts.length) {
-                container.innerHTML = '<div class="no-posts">لا توجد تعاميم</div>';
+            if (!posts || posts.length === 0) {
+                container.innerHTML = '<div class="no-posts">لا توجد تعاميم بعد</div>';
                 return;
             }
 
@@ -349,13 +292,11 @@
                 });
 
                 let imagesHtml = '';
-                if (post.images && post.images.length) {
+                if (post.images && post.images.length > 0) {
                     imagesHtml = '<div class="post-images">';
                     post.images.forEach(img => {
                         if (img) {
-                            imagesHtml += `
-                                <img src="${img}" class="post-image" onclick="window.open('${img}','_blank')">
-                            `;
+                            imagesHtml += `<img src="${img}" class="post-image" onclick="window.open('${img}', '_blank')">`;
                         }
                     });
                     imagesHtml += '</div>';
@@ -364,23 +305,87 @@
                 html += `
                     <div class="post-card">
                         <div class="post-header">
-                            <span class="post-type">${post.type}</span>
+                            <span class="post-type">${escapeHtml(post.type)}</span>
                             <span class="post-date">${date}</span>
                         </div>
                         <div class="post-content">
                             <h2 class="post-title">${escapeHtml(post.title)}</h2>
                             <div class="post-text">${escapeHtml(post.text).replace(/\n/g, '<br>')}</div>
                             ${imagesHtml}
-                            ${isAdminLoggedIn ? `
-                                <button class="delete-post-btn" onclick="deletePost(${post.id})">🗑️ حذف التعميم</button>
+                            ${isAdmin ? `
+                                <div class="post-actions">
+                                    <button class="edit-post-btn" onclick="editPost(${post.id})">✏️ تعديل</button>
+                                    <button class="delete-post-btn" onclick="deletePost(${post.id})">🗑️ حذف</button>
+                                </div>
                             ` : ''}
                         </div>
                     </div>
                 `;
             });
+
             container.innerHTML = html;
         }
 
         function escapeHtml(text) {
             const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function searchPosts() {
+            const term = document.getElementById('searchInput').value.toLowerCase();
+            if (!term) {
+                displayPosts(allPosts);
+                return;
+            }
+            const filtered = allPosts.filter(p => 
+                p.title.toLowerCase().includes(term)
+            );
+            displayPosts(filtered);
+        }
+
+        // ===== كاميرا محسنة للهاتف =====
+        async function openCamera(btn) {
+            currentInput = btn.closest('.image-row').querySelector('.imageUrl');
             
+            try {
+                // طلب الكاميرا الخلفية
+                cameraStream = await navigator.mediaDevices.getUserMedia({ 
+                    video: {
+                        facingMode: "environment",
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    }, 
+                    audio: false 
+                });
+                
+                const video = document.getElementById('cameraVideo');
+                video.srcObject = cameraStream;
+                
+                // تشغيل الفيديو
+                await video.play();
+                
+                document.getElementById('cameraModal').classList.add('active');
+            } catch(err) {
+                console.error('Camera error:', err);
+                showToast('❌ لا يمكن فتح الكاميرا', true);
+            }
+        }
+
+        function closeCamera() {
+            if (cameraStream) {
+                cameraStream.getTracks().forEach(t => t.stop());
+                cameraStream = null;
+            }
+            document.getElementById('cameraModal').classList.remove('active');
+        }
+
+        async function takePhoto() {
+            const video = document.getElementById('cameraVideo');
+            const canvas = document.getElementById('photoCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            // ضبط أبعاد الصورة
+            canvas.width = video.videoWidth || 1280;
+            canvas.height = video.videoHeight || 720;
+            c
